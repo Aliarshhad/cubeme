@@ -1,22 +1,26 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Home, Receipt, HandCoins, Settings, LogOut } from "lucide-react";
+import { Home, Receipt, HandCoins, Settings, LogOut, History, User } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { CubeWordmark } from "@/components/CubeLogo";
+import { useProfile, useSignedUrl } from "@/hooks/use-cube";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/expenses", label: "Expenses", icon: Receipt },
-  { to: "/ledger", label: "Lend/Borrow", icon: HandCoins },
+  { to: "/ledger", label: "Ledger", icon: HandCoins },
+  { to: "/history", label: "History", icon: History },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const profile = useProfile();
+  const avatar = useSignedUrl("avatars", profile.data?.avatar_url);
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -44,13 +48,31 @@ export function AppShell({ children }: { children: ReactNode }) {
               </Link>
             ))}
           </nav>
-          <button
-            onClick={signOut}
-            aria-label="Sign out"
-            className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-primary/20 hover:text-foreground"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <Link
+              to="/profile"
+              aria-label="Profile"
+              className="rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              {avatar.data ? (
+                <img
+                  src={avatar.data}
+                  alt="Your profile picture"
+                  className="h-7 w-7 rounded-full object-cover"
+                />
+              ) : (
+                <User className="h-5 w-5" />
+              )}
+            </Link>
+            <button
+              onClick={signOut}
+              aria-label="Sign out"
+              className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-primary/20 hover:text-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -63,7 +85,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               key={t.to}
               to={t.to}
               className={cn(
-                "flex flex-1 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] uppercase tracking-wider text-muted-foreground transition-colors",
+                "flex flex-1 flex-col items-center gap-1 rounded-2xl px-1 py-2 text-[10px] uppercase tracking-wider text-muted-foreground transition-colors",
               )}
               activeProps={{ className: "bg-primary/20 text-foreground" }}
             >
