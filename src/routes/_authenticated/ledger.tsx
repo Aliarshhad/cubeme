@@ -39,7 +39,7 @@ export const Route = createFileRoute("/_authenticated/ledger")({
       },
     ],
   }),
-  component: Ledger;
+  component: Ledger,
 });
 
 const TABS: { key: api.DebtDirection; label: string }[] = [
