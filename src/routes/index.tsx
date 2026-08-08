@@ -52,15 +52,15 @@ function Landing() {
       <main className="mx-auto flex max-w-3xl flex-col items-center px-5 py-16 text-center">
         <CubeWordmark className="scale-125" />
 
-        <h1 className="mt-10 font-display text-5xl uppercase leading-[0.95] tracking-[0.06em] text-glow sm:text-6xl">
-          Every rupee,
-          <br />
-          accounted for.
+        <h1 className="mt-10 font-marker text-6xl leading-[0.95] text-glow sm:text-7xl">
+          Money loves water
         </h1>
-        <p className="mt-5 max-w-md text-base text-muted-foreground">
-          A daily budgeting companion for monthly planning, expense logging and money you have lent
-          or borrowed.
+        <p className="mt-5 max-w-lg text-base text-muted-foreground">
+          A daily budgeting companion for monthly planning, it needs to move and flow to grow rather
+          than stay still. When money sits in one place, it loses value, but when it circulates, it
+          multiplies.
         </p>
+
 
         <Link
           to="/auth"
