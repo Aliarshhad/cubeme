@@ -48,11 +48,16 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          currency: string | null
           direction: string
+          expected_return_on: string | null
+          fx_rate: number
           id: string
           note: string | null
           occurred_on: string
+          original_amount: number | null
           person: string
+          purpose: string | null
           settled_at: string | null
           updated_at: string
           user_id: string
@@ -60,11 +65,16 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          currency?: string | null
           direction: string
+          expected_return_on?: string | null
+          fx_rate?: number
           id?: string
           note?: string | null
           occurred_on?: string
+          original_amount?: number | null
           person: string
+          purpose?: string | null
           settled_at?: string | null
           updated_at?: string
           user_id: string
@@ -72,11 +82,16 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          currency?: string | null
           direction?: string
+          expected_return_on?: string | null
+          fx_rate?: number
           id?: string
           note?: string | null
           occurred_on?: string
+          original_amount?: number | null
           person?: string
+          purpose?: string | null
           settled_at?: string | null
           updated_at?: string
           user_id?: string
@@ -88,8 +103,13 @@ export type Database = {
           amount: number
           category_id: string | null
           created_at: string
+          currency: string | null
+          fx_rate: number
           id: string
+          need_want: string | null
           note: string | null
+          original_amount: number | null
+          receipt_id: string | null
           spent_on: string
           updated_at: string
           user_id: string
@@ -98,8 +118,13 @@ export type Database = {
           amount: number
           category_id?: string | null
           created_at?: string
+          currency?: string | null
+          fx_rate?: number
           id?: string
+          need_want?: string | null
           note?: string | null
+          original_amount?: number | null
+          receipt_id?: string | null
           spent_on?: string
           updated_at?: string
           user_id: string
@@ -108,8 +133,13 @@ export type Database = {
           amount?: number
           category_id?: string | null
           created_at?: string
+          currency?: string | null
+          fx_rate?: number
           id?: string
+          need_want?: string | null
           note?: string | null
+          original_amount?: number | null
+          receipt_id?: string | null
           spent_on?: string
           updated_at?: string
           user_id?: string
@@ -122,7 +152,50 @@ export type Database = {
             referencedRelation: "categories"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "expenses_receipt_id_fkey"
+            columns: ["receipt_id"]
+            isOneToOne: false
+            referencedRelation: "receipts"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      fx_rates: {
+        Row: {
+          base: string
+          code: string
+          created_at: string
+          fetched_at: string | null
+          id: string
+          manual: boolean
+          rate: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          base: string
+          code: string
+          created_at?: string
+          fetched_at?: string | null
+          id?: string
+          manual?: boolean
+          rate: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          base?: string
+          code?: string
+          created_at?: string
+          fetched_at?: string | null
+          id?: string
+          manual?: boolean
+          rate?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       monthly_budgets: {
         Row: {
@@ -153,6 +226,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           currency: string
           display_name: string | null
@@ -160,6 +234,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           currency?: string
           display_name?: string | null
@@ -167,6 +242,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           currency?: string
           display_name?: string | null
@@ -174,6 +250,109 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      receipt_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total: number | null
+          name: string
+          need_want: string | null
+          quantity: number
+          reason: string | null
+          receipt_id: string
+          sort_order: number
+          unit_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total?: number | null
+          name: string
+          need_want?: string | null
+          quantity?: number
+          reason?: string | null
+          receipt_id: string
+          sort_order?: number
+          unit_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total?: number | null
+          name?: string
+          need_want?: string | null
+          quantity?: number
+          reason?: string | null
+          receipt_id?: string
+          sort_order?: number
+          unit_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receipt_items_receipt_id_fkey"
+            columns: ["receipt_id"]
+            isOneToOne: false
+            referencedRelation: "receipts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      receipts: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          currency: string | null
+          id: string
+          image_path: string | null
+          merchant: string | null
+          raw: Json | null
+          receipt_date: string | null
+          total: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          image_path?: string | null
+          merchant?: string | null
+          raw?: Json | null
+          receipt_date?: string | null
+          total?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          image_path?: string | null
+          merchant?: string | null
+          raw?: Json | null
+          receipt_date?: string | null
+          total?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receipts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       recurring_applied: {
         Row: {
