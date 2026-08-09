@@ -415,6 +415,19 @@ function SettingsPage() {
           </Button>
         </form>
       </GlassCard>
+
+      <Link
+        to="/privacy"
+        className="flex items-center gap-3 rounded-3xl glass-soft px-5 py-4 text-sm transition-colors hover:bg-foreground/5"
+      >
+        <ShieldCheck className="h-5 w-5 text-primary" />
+        <span>
+          <span className="block font-medium">Privacy &amp; data policy</span>
+          <span className="text-xs text-muted-foreground">
+            What is stored, where it lives, how it is secured and how to delete it.
+          </span>
+        </span>
+      </Link>
     </div>
   );
 }
