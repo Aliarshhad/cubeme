@@ -52,19 +52,17 @@ function Landing() {
       <main className="mx-auto flex max-w-3xl flex-col items-center px-5 py-16 text-center">
         <CubeWordmark className="scale-125" />
 
-        <h1 className="mt-10 font-marker text-6xl leading-[0.95] text-glow sm:text-7xl">
+        <h1 className="mt-10 font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-glow sm:text-7xl">
           Money loves water
         </h1>
         <p className="mt-5 max-w-lg text-base text-muted-foreground">
-          A daily budgeting companion for monthly planning, it needs to move and flow to grow rather
-          than stay still. When money sits in one place, it loses value, but when it circulates, it
+          Money needs to move and flow to grow rather than stay still. When you circulates, it
           multiplies.
         </p>
 
-
         <Link
           to="/auth"
-          className="mt-8 inline-flex h-14 items-center justify-center rounded-3xl bg-primary px-9 font-display text-base uppercase tracking-[0.16em] text-primary-foreground transition-transform hover:scale-[1.02]"
+          className="mt-8 inline-flex h-14 items-center justify-center rounded-3xl bg-primary px-9 font-display text-base font-semibold tracking-tight text-primary-foreground transition-transform hover:scale-[1.02]"
         >
           Open Cube
         </Link>
@@ -73,11 +71,18 @@ function Landing() {
           {features.map((f) => (
             <div key={f.title} className="glass rounded-3xl p-5 text-left">
               <f.icon className="h-5 w-5 text-primary" />
-              <h2 className="mt-3 font-display text-xl uppercase tracking-[0.1em]">{f.title}</h2>
+              <h2 className="mt-3 font-display text-xl tracking-tight">{f.title}</h2>
               <p className="mt-1.5 text-sm text-muted-foreground">{f.body}</p>
             </div>
           ))}
         </div>
+
+        <Link
+          to="/privacy"
+          className="mt-12 text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+        >
+          Privacy &amp; data policy
+        </Link>
       </main>
     </div>
   );
