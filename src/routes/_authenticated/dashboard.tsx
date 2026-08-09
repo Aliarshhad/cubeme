@@ -224,20 +224,28 @@ function Dashboard() {
 function Stat({
   label,
   value,
+  currency,
   tone,
 }: {
   label: string;
-  value: string;
-  tone?: "up" | "down";
+  value: number;
+  currency: string;
+  tone?: "up" | "down" | undefined;
 }) {
   return (
-    <div className="rounded-2xl glass-soft px-2 py-3">
+    <div className="min-w-0 rounded-2xl glass-soft px-2 py-3">
       <p className="flex items-center justify-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground">
         {tone === "up" && <TrendingUp className="h-3 w-3" />}
         {tone === "down" && <TrendingDown className="h-3 w-3" />}
         {label}
       </p>
-      <p className="mt-1 truncate text-sm font-semibold">{value}</p>
+      <AmountDisplay
+        value={value}
+        currency={currency}
+        size="stat"
+        className="mt-1 font-semibold"
+      />
     </div>
+
   );
 }
