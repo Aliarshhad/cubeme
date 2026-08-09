@@ -53,6 +53,9 @@ export type Profile = {
   display_name: string | null;
   currency: string;
   avatar_url: string | null;
+  theme: string;
+  reminder_enabled: boolean;
+  reminder_time: string;
 };
 
 export type FxRate = {
