@@ -88,7 +88,8 @@ function Dashboard() {
   const spent = (expenses.data ?? []).reduce((s, e) => s + e.amount, 0);
   const { lent, borrowed } = debtTotals(debts.data ?? []);
   const remaining = budgetAmount - spent - lent + borrowed;
-  const pct = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
+  const today = todayISO();
+  const loggedToday = (expenses.data ?? []).some((e) => e.spent_on === today);
 
   const byCategory = (categories.data ?? [])
     .map((c) => ({
@@ -105,69 +106,55 @@ function Dashboard() {
       <MonthSwitcher label={label} onPrev={prev} onNext={next} />
 
       <GlassCard>
-        <div className="flex items-center gap-5">
-          <div className="relative shrink-0">
-            <Ring pct={pct} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-2xl leading-none">{Math.round(pct)}%</span>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                used
-              </span>
-            </div>
-          </div>
-          <div className="min-w-0 flex-1 space-y-2">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Available
-              </p>
-              <p
-                className="font-display text-4xl leading-none text-glow"
-                style={{ color: remaining < 0 ? "var(--destructive)" : undefined }}
-              >
-                {formatMoney(remaining, currency)}
-              </p>
-            </div>
-            {editingBudget ? (
-              <form
-                className="flex gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  saveBudget.mutate(Number(budgetDraft) || 0);
-                }}
-              >
-                <Input
-                  autoFocus
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  value={budgetDraft}
-                  onChange={(e) => setBudgetDraft(e.target.value)}
-                  className="h-9 bg-input/40"
-                  placeholder="Monthly budget"
-                />
-                <Button type="submit" size="sm">
-                  Save
-                </Button>
-              </form>
-            ) : (
-              <button
-                onClick={() => {
-                  setBudgetDraft(String(budgetAmount || ""));
-                  setEditingBudget(true);
-                }}
-                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Budget {formatMoney(budgetAmount, currency)}
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+        <div className="min-w-0 space-y-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Available</p>
+          <AmountDisplay
+            value={remaining}
+            currency={currency}
+            className="text-glow"
+            tone={remaining < 0 ? "var(--destructive)" : undefined}
+          />
+          {editingBudget ? (
+            <form
+              className="flex gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveBudget.mutate(Number(budgetDraft) || 0);
+              }}
+            >
+              <Input
+                autoFocus
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                value={budgetDraft}
+                onChange={(e) => setBudgetDraft(e.target.value)}
+                className="h-9 bg-input/40"
+                placeholder="Monthly budget"
+              />
+              <Button type="submit" size="sm">
+                Save
+              </Button>
+            </form>
+          ) : (
+            <button
+              onClick={() => {
+                setBudgetDraft(String(budgetAmount || ""));
+                setEditingBudget(true);
+              }}
+              className="flex max-w-full items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <span className="truncate">Budget {formatMoney(budgetAmount, currency)}</span>
+              <Pencil className="h-3.5 w-3.5 shrink-0" />
+            </button>
+          )}
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-          <Stat label="Spent" value={formatMoney(spent, currency)} />
-          <Stat label="Lent out" value={formatMoney(lent, currency)} tone="down" />
-          <Stat label="Borrowed" value={formatMoney(borrowed, currency)} tone="up" />
+          <Stat label="Spent" value={spent} currency={currency} />
+          <Stat label="Lent out" value={lent} currency={currency} tone="down" />
+          <Stat label="Borrowed" value={borrowed} currency={currency} tone="up" />
+
         </div>
       </GlassCard>
 
