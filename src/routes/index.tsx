@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { HandCoins, PieChart, Repeat, WalletMinimal } from "lucide-react";
+import { CloudCheck, HandCoins, PieChart, WalletMinimal } from "lucide-react";
 
 import { CubeWordmark } from "@/components/CubeLogo";
 
@@ -40,9 +40,9 @@ const features = [
     body: "Lending drops your balance, borrowing lifts it. Settle any time.",
   },
   {
-    icon: Repeat,
-    title: "Recurring",
-    body: "Rent and bills roll into each new month with one tap.",
+    icon: CloudCheck,
+    title: "Cloud synced",
+    body: "Your data is securely saved and available on any device.",
   },
 ];
 
