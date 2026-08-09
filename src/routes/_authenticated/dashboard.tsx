@@ -159,12 +159,26 @@ function Dashboard() {
         </div>
       </GlassCard>
 
+      {!loggedToday && (
+        <GlassCard className="flex items-start gap-3">
+          <BellRing className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <div>
+            <p className="font-display text-lg tracking-tight">Nothing logged today</p>
+            <p className="text-sm text-muted-foreground">
+              Add today's spending while it's fresh — a daily minute keeps the month honest. Turn on
+              a daily reminder in Settings.
+            </p>
+          </div>
+        </GlassCard>
+      )}
+
       <Button
         className="h-14 w-full rounded-3xl text-base font-semibold"
         onClick={() => setAddOpen(true)}
       >
         <Plus className="mr-1 h-5 w-5" /> Add expense
       </Button>
+
 
       {pending.length > 0 && (
         <GlassCard className="flex items-center justify-between gap-3">
