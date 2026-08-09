@@ -42,30 +42,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-function Ring({ pct }: { pct: number }) {
-  const clamped = Math.max(0, Math.min(100, pct));
-  const stroke =
-    clamped >= 100 ? "var(--destructive)" : clamped >= 80 ? "var(--warning)" : "var(--primary)";
-  const r = 52;
-  const c = 2 * Math.PI * r;
-  return (
-    <svg viewBox="0 0 120 120" className="h-32 w-32 -rotate-90">
-      <circle cx="60" cy="60" r={r} fill="none" stroke="var(--input)" strokeWidth="10" />
-      <circle
-        cx="60"
-        cy="60"
-        r={r}
-        fill="none"
-        stroke={stroke}
-        strokeWidth="10"
-        strokeLinecap="round"
-        strokeDasharray={c}
-        strokeDashoffset={c - (c * clamped) / 100}
-        style={{ transition: "stroke-dashoffset 500ms ease" }}
-      />
-    </svg>
-  );
-}
+/* progress is shown by the category bars below */
 
 function Dashboard() {
   const { month, label, prev, next } = useMonthState();
