@@ -243,6 +243,7 @@ function Dashboard() {
       </GlassCard>
 
       <ExpenseDialog open={addOpen} onOpenChange={setAddOpen} />
+      <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
     </div>
   );
 }
