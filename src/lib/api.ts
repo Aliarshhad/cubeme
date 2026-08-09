@@ -53,6 +53,9 @@ export type Profile = {
   display_name: string | null;
   currency: string;
   avatar_url: string | null;
+  theme: string;
+  reminder_enabled: boolean;
+  reminder_time: string;
 };
 
 export type FxRate = {
@@ -115,7 +118,8 @@ async function uid() {
 
 export async function fetchProfile(): Promise<Profile> {
   const id = await uid();
-  const cols = "id, display_name, currency, avatar_url";
+  const cols =
+    "id, display_name, currency, avatar_url, theme, reminder_enabled, reminder_time";
   const { data, error } = await supabase.from("profiles").select(cols).eq("id", id).maybeSingle();
   if (error) throw error;
   if (data) return data as Profile;
@@ -128,6 +132,9 @@ export async function updateProfile(patch: {
   display_name?: string;
   currency?: string;
   avatar_url?: string | null;
+  theme?: string;
+  reminder_enabled?: boolean;
+  reminder_time?: string;
 }) {
   const id = await uid();
   const { error } = await supabase.from("profiles").update(patch).eq("id", id);

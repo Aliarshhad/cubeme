@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Repeat, TrendingDown, TrendingUp, Pencil } from "lucide-react";
+import { Plus, Repeat, TrendingDown, TrendingUp, Pencil, BellRing, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 
+import { AmountDisplay } from "@/components/AmountDisplay";
+import { ReceiptScanner } from "@/components/ReceiptScanner";
 import { GlassCard } from "@/components/AppShell";
 import { MonthSwitcher } from "@/components/MonthSwitcher";
 import { ExpenseDialog } from "@/components/ExpenseDialog";
@@ -42,30 +44,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-function Ring({ pct }: { pct: number }) {
-  const clamped = Math.max(0, Math.min(100, pct));
-  const stroke =
-    clamped >= 100 ? "var(--destructive)" : clamped >= 80 ? "var(--warning)" : "var(--primary)";
-  const r = 52;
-  const c = 2 * Math.PI * r;
-  return (
-    <svg viewBox="0 0 120 120" className="h-32 w-32 -rotate-90">
-      <circle cx="60" cy="60" r={r} fill="none" stroke="var(--input)" strokeWidth="10" />
-      <circle
-        cx="60"
-        cy="60"
-        r={r}
-        fill="none"
-        stroke={stroke}
-        strokeWidth="10"
-        strokeLinecap="round"
-        strokeDasharray={c}
-        strokeDashoffset={c - (c * clamped) / 100}
-        style={{ transition: "stroke-dashoffset 500ms ease" }}
-      />
-    </svg>
-  );
-}
+/* progress is shown by the category bars below */
 
 function Dashboard() {
   const { month, label, prev, next } = useMonthState();
@@ -82,6 +61,7 @@ function Dashboard() {
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetDraft, setBudgetDraft] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
 
   const saveBudget = useMutation({
     mutationFn: (amount: number) => api.setBudget(month, amount),
@@ -111,7 +91,8 @@ function Dashboard() {
   const spent = (expenses.data ?? []).reduce((s, e) => s + e.amount, 0);
   const { lent, borrowed } = debtTotals(debts.data ?? []);
   const remaining = budgetAmount - spent - lent + borrowed;
-  const pct = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
+  const today = new Date().toLocaleDateString("en-CA");
+  const loggedToday = (expenses.data ?? []).some((e) => e.spent_on === today);
 
   const byCategory = (categories.data ?? [])
     .map((c) => ({
@@ -128,78 +109,88 @@ function Dashboard() {
       <MonthSwitcher label={label} onPrev={prev} onNext={next} />
 
       <GlassCard>
-        <div className="flex items-center gap-5">
-          <div className="relative shrink-0">
-            <Ring pct={pct} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-2xl leading-none">{Math.round(pct)}%</span>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                used
-              </span>
-            </div>
-          </div>
-          <div className="min-w-0 flex-1 space-y-2">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Available
-              </p>
-              <p
-                className="font-display text-4xl leading-none text-glow"
-                style={{ color: remaining < 0 ? "var(--destructive)" : undefined }}
-              >
-                {formatMoney(remaining, currency)}
-              </p>
-            </div>
-            {editingBudget ? (
-              <form
-                className="flex gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  saveBudget.mutate(Number(budgetDraft) || 0);
-                }}
-              >
-                <Input
-                  autoFocus
-                  type="number"
-                  inputMode="decimal"
-                  step="0.01"
-                  value={budgetDraft}
-                  onChange={(e) => setBudgetDraft(e.target.value)}
-                  className="h-9 bg-input/40"
-                  placeholder="Monthly budget"
-                />
-                <Button type="submit" size="sm">
-                  Save
-                </Button>
-              </form>
-            ) : (
-              <button
-                onClick={() => {
-                  setBudgetDraft(String(budgetAmount || ""));
-                  setEditingBudget(true);
-                }}
-                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Budget {formatMoney(budgetAmount, currency)}
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+        <div className="min-w-0 space-y-2">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Available</p>
+          <AmountDisplay
+            value={remaining}
+            currency={currency}
+            className="text-glow"
+            tone={remaining < 0 ? "var(--destructive)" : undefined}
+          />
+          {editingBudget ? (
+            <form
+              className="flex gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveBudget.mutate(Number(budgetDraft) || 0);
+              }}
+            >
+              <Input
+                autoFocus
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                value={budgetDraft}
+                onChange={(e) => setBudgetDraft(e.target.value)}
+                className="h-9 bg-input/40"
+                placeholder="Monthly budget"
+              />
+              <Button type="submit" size="sm">
+                Save
+              </Button>
+            </form>
+          ) : (
+            <button
+              onClick={() => {
+                setBudgetDraft(String(budgetAmount || ""));
+                setEditingBudget(true);
+              }}
+              className="flex max-w-full items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <span className="truncate">Budget {formatMoney(budgetAmount, currency)}</span>
+              <Pencil className="h-3.5 w-3.5 shrink-0" />
+            </button>
+          )}
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-          <Stat label="Spent" value={formatMoney(spent, currency)} />
-          <Stat label="Lent out" value={formatMoney(lent, currency)} tone="down" />
-          <Stat label="Borrowed" value={formatMoney(borrowed, currency)} tone="up" />
+          <Stat label="Spent" value={spent} currency={currency} />
+          <Stat label="Lent out" value={lent} currency={currency} tone="down" />
+          <Stat label="Borrowed" value={borrowed} currency={currency} tone="up" />
+
         </div>
       </GlassCard>
 
-      <Button
-        className="h-14 w-full rounded-3xl text-base font-semibold"
-        onClick={() => setAddOpen(true)}
-      >
-        <Plus className="mr-1 h-5 w-5" /> Add expense
-      </Button>
+      {!loggedToday && (
+        <GlassCard className="flex items-start gap-3">
+          <BellRing className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <div>
+            <p className="font-display text-lg tracking-tight">Nothing logged today</p>
+            <p className="text-sm text-muted-foreground">
+              Add today's spending while it's fresh — a daily minute keeps the month honest. Turn on
+              a daily reminder in Settings.
+            </p>
+          </div>
+        </GlassCard>
+      )}
+
+      <div className="flex gap-2">
+        <Button
+          className="h-14 flex-1 rounded-3xl text-base font-semibold"
+          onClick={() => setAddOpen(true)}
+        >
+          <Plus className="mr-1 h-5 w-5" /> Add expense
+        </Button>
+        <Button
+          variant="secondary"
+          className="h-14 rounded-3xl px-5 text-base font-semibold"
+          onClick={() => setScanOpen(true)}
+        >
+          <ScanLine className="mr-1 h-5 w-5" /> Scan
+        </Button>
+      </div>
+
+
 
       {pending.length > 0 && (
         <GlassCard className="flex items-center justify-between gap-3">
@@ -252,6 +243,7 @@ function Dashboard() {
       </GlassCard>
 
       <ExpenseDialog open={addOpen} onOpenChange={setAddOpen} />
+      <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
     </div>
   );
 }
@@ -259,20 +251,28 @@ function Dashboard() {
 function Stat({
   label,
   value,
+  currency,
   tone,
 }: {
   label: string;
-  value: string;
-  tone?: "up" | "down";
+  value: number;
+  currency: string;
+  tone?: "up" | "down" | undefined;
 }) {
   return (
-    <div className="rounded-2xl glass-soft px-2 py-3">
+    <div className="min-w-0 rounded-2xl glass-soft px-2 py-3">
       <p className="flex items-center justify-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground">
         {tone === "up" && <TrendingUp className="h-3 w-3" />}
         {tone === "down" && <TrendingDown className="h-3 w-3" />}
         {label}
       </p>
-      <p className="mt-1 truncate text-sm font-semibold">{value}</p>
+      <AmountDisplay
+        value={value}
+        currency={currency}
+        size="stat"
+        className="mt-1 font-semibold"
+      />
     </div>
+
   );
 }

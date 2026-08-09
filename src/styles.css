@@ -5,8 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Cube design system — liquid glass over deep maroon/black.
- * All colors use oklch and are exposed as semantic tokens.
+ * Cube design system — iOS-style liquid glass.
+ * Two themes: Founder (maroon noir, default) and Taurus (neon lime noir).
+ * All colors are semantic tokens; components never hardcode colors.
  */
 
 @theme inline {
@@ -53,35 +54,41 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-display: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
-  --font-sans: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
-  --font-marker: "Caveat Brush", "Bradley Hand", "Segoe Script", cursive;
-
+  --font-display:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  --font-marker:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
 }
 
+/* Founder — deep maroon / crimson noir (default) */
 :root {
-  --radius: 1.25rem;
+  --radius: 1.4rem;
   --background: oklch(0.16 0.028 12);
   --foreground: oklch(0.97 0.006 40);
-  --card: oklch(0.24 0.05 14 / 45%);
+  --card: oklch(0.28 0.055 14 / 34%);
   --card-foreground: oklch(0.97 0.006 40);
   --popover: oklch(0.19 0.038 12);
   --popover-foreground: oklch(0.97 0.006 40);
   --primary: oklch(0.6 0.23 22);
   --primary-foreground: oklch(0.99 0.004 40);
-  --secondary: oklch(0.3 0.075 14 / 60%);
+  --secondary: oklch(0.3 0.075 14 / 55%);
   --secondary-foreground: oklch(0.96 0.006 40);
-  --muted: oklch(0.28 0.05 14 / 55%);
-  --muted-foreground: oklch(0.75 0.02 30);
-  --accent: oklch(0.36 0.11 18 / 70%);
+  --muted: oklch(0.28 0.05 14 / 50%);
+  --muted-foreground: oklch(0.76 0.02 30);
+  --accent: oklch(0.36 0.11 18 / 65%);
   --accent-foreground: oklch(0.98 0.005 40);
   --destructive: oklch(0.62 0.24 22);
   --destructive-foreground: oklch(0.99 0.004 40);
   --success: oklch(0.72 0.16 155);
   --warning: oklch(0.8 0.16 78);
   --maroon: oklch(0.33 0.13 18);
-  --border: oklch(0.98 0.005 40 / 14%);
-  --input: oklch(0.98 0.005 40 / 12%);
+  --border: oklch(0.98 0.005 40 / 12%);
+  --input: oklch(0.98 0.005 40 / 10%);
   --ring: oklch(0.6 0.23 22);
   --chart-1: oklch(0.6 0.23 22);
   --chart-2: oklch(0.72 0.17 45);
@@ -96,6 +103,56 @@
   --sidebar-accent-foreground: oklch(0.96 0.006 40);
   --sidebar-border: oklch(0.98 0.005 40 / 14%);
   --sidebar-ring: oklch(0.6 0.23 22);
+
+  /* glass tuning */
+  --glass-blur: 30px;
+  --glass-tint: 11%;
+  --glow-a: var(--primary);
+  --glow-b: var(--maroon);
+}
+
+/* Taurus — neon lime noir */
+[data-theme="taurus"] {
+  --background: oklch(0.14 0.05 132);
+  --foreground: oklch(0.97 0.04 122);
+  --card: oklch(0.32 0.12 130 / 30%);
+  --card-foreground: oklch(0.97 0.04 122);
+  --popover: oklch(0.17 0.06 132);
+  --popover-foreground: oklch(0.97 0.04 122);
+  --primary: oklch(0.9 0.28 126);
+  --primary-foreground: oklch(0.16 0.06 132);
+  --secondary: oklch(0.28 0.1 130 / 60%);
+  --secondary-foreground: oklch(0.96 0.05 122);
+  --muted: oklch(0.26 0.09 130 / 55%);
+  --muted-foreground: oklch(0.8 0.09 124);
+  --accent: oklch(0.42 0.16 128 / 65%);
+  --accent-foreground: oklch(0.98 0.04 122);
+  --destructive: oklch(0.63 0.23 25);
+  --destructive-foreground: oklch(0.99 0.01 120);
+  --success: oklch(0.75 0.2 135);
+  --warning: oklch(0.88 0.2 110);
+  --maroon: oklch(0.28 0.11 130);
+  --border: oklch(0.9 0.28 126 / 16%);
+  --input: oklch(0.9 0.28 126 / 10%);
+  --ring: oklch(0.9 0.28 126);
+  --chart-1: oklch(0.9 0.28 126);
+  --chart-2: oklch(0.75 0.22 135);
+  --chart-3: oklch(0.62 0.17 155);
+  --chart-4: oklch(0.82 0.19 105);
+  --chart-5: oklch(0.7 0.14 175);
+  --sidebar: oklch(0.17 0.06 132);
+  --sidebar-foreground: oklch(0.97 0.04 122);
+  --sidebar-primary: oklch(0.9 0.28 126);
+  --sidebar-primary-foreground: oklch(0.16 0.06 132);
+  --sidebar-accent: oklch(0.28 0.1 130 / 60%);
+  --sidebar-accent-foreground: oklch(0.96 0.05 122);
+  --sidebar-border: oklch(0.9 0.28 126 / 16%);
+  --sidebar-ring: oklch(0.9 0.28 126);
+
+  --glass-blur: 26px;
+  --glass-tint: 9%;
+  --glow-a: oklch(0.72 0.22 130);
+  --glow-b: oklch(0.35 0.14 130);
 }
 
 @layer base {
@@ -121,66 +178,124 @@
   .font-display {
     font-family: var(--font-display);
     font-weight: 700;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.015em;
   }
 
   .font-marker {
     font-family: var(--font-marker);
-    font-weight: 400;
+    font-weight: 800;
+    letter-spacing: -0.03em;
   }
 }
 
-
-/* Frosted glass panel */
+/* Thick frosted panel — iOS "regular" material */
 @utility glass {
-  background: linear-gradient(
-    145deg,
-    color-mix(in oklab, var(--color-foreground) 10%, transparent),
-    color-mix(in oklab, var(--color-maroon) 22%, transparent)
-  );
-  border: 1px solid color-mix(in oklab, var(--color-foreground) 14%, transparent);
-  backdrop-filter: blur(28px) saturate(150%);
+  position: relative;
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--color-foreground) var(--glass-tint), transparent),
+      color-mix(in oklab, var(--color-maroon) 20%, transparent) 55%,
+      color-mix(in oklab, var(--color-foreground) 4%, transparent)
+    );
+  border: 1px solid color-mix(in oklab, var(--color-foreground) 11%, transparent);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   box-shadow:
-    0 24px 60px -30px oklch(0 0 0 / 70%),
-    inset 0 1px 0 color-mix(in oklab, var(--color-foreground) 18%, transparent);
+    0 30px 70px -34px oklch(0 0 0 / 72%),
+    inset 0 1px 0 color-mix(in oklab, var(--color-foreground) 26%, transparent),
+    inset 0 -1px 0 color-mix(in oklab, var(--color-foreground) 6%, transparent);
 }
 
+/* Thin chrome material — header / tab bar */
 @utility glass-soft {
   background: color-mix(in oklab, var(--color-foreground) 6%, transparent);
-  border: 1px solid color-mix(in oklab, var(--color-foreground) 10%, transparent);
-  backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid color-mix(in oklab, var(--color-foreground) 9%, transparent);
+  backdrop-filter: blur(22px) saturate(170%);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-foreground) 16%, transparent);
 }
 
 @utility text-glow {
-  text-shadow: 0 0 32px color-mix(in oklab, var(--color-primary) 55%, transparent);
+  text-shadow: 0 0 34px color-mix(in oklab, var(--color-primary) 50%, transparent);
 }
 
-/* Ambient maroon/crimson glow field */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ambient glow field with slow drifting blobs */
+@keyframes cube-drift-a {
+  0% {
+    transform: translate3d(-4%, -3%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, 5%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-4%, -3%, 0) scale(1);
+  }
+}
+
+@keyframes cube-drift-b {
+  0% {
+    transform: translate3d(5%, 4%, 0) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-6%, -6%, 0) scale(0.94);
+  }
+  100% {
+    transform: translate3d(5%, 4%, 0) scale(1.08);
+  }
+}
+
 @utility glow-field {
   position: relative;
   isolation: isolate;
-  &::before {
+
+  &::before,
+  &::after {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: -20%;
     z-index: -1;
     pointer-events: none;
+    will-change: transform;
+  }
+
+  &::before {
     background:
       radial-gradient(
-        60% 45% at 12% 4%,
-        color-mix(in oklab, var(--color-primary) 42%, transparent),
+        44% 32% at 14% 8%,
+        color-mix(in oklab, var(--glow-a) 42%, transparent),
         transparent 70%
       ),
       radial-gradient(
-        70% 55% at 96% 22%,
-        color-mix(in oklab, var(--color-maroon) 85%, transparent),
+        50% 38% at 92% 24%,
+        color-mix(in oklab, var(--glow-b) 88%, transparent),
         transparent 72%
+      );
+    animation: cube-drift-a 34s ease-in-out infinite;
+  }
+
+  &::after {
+    background:
+      radial-gradient(
+        56% 34% at 50% 96%,
+        color-mix(in oklab, var(--glow-a) 30%, transparent),
+        transparent 70%
       ),
       radial-gradient(
-        80% 50% at 50% 108%,
-        color-mix(in oklab, var(--color-primary) 30%, transparent),
-        transparent 70%
+        38% 28% at 78% 68%,
+        color-mix(in oklab, var(--glow-b) 62%, transparent),
+        transparent 74%
       );
+    animation: cube-drift-b 46s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before,
+    &::after {
+      animation: none;
+    }
   }
 }
 

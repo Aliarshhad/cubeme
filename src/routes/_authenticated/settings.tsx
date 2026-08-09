@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, Pencil, Plus, Repeat, Trash2, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BellRing, Check, Pencil, Plus, Repeat, ShieldCheck, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -17,8 +17,12 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useCategories, useProfile, useRecurring } from "@/hooks/use-cube";
+import { useTheme } from "@/hooks/use-theme";
 import * as api from "@/lib/api";
 import { CURRENCIES, formatMoney } from "@/lib/format";
+import { requestReminderPermission } from "@/lib/reminders";
+import { THEMES } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -144,10 +148,94 @@ function SettingsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const { theme, setTheme } = useTheme();
+  const reminderEnabled = profile.data?.reminder_enabled ?? false;
+  const reminderTime = (profile.data?.reminder_time ?? "21:00").slice(0, 5);
+
+  const saveReminder = useMutation({
+    mutationFn: async (patch: { reminder_enabled?: boolean; reminder_time?: string }) => {
+      if (patch.reminder_enabled) {
+        const permission = await requestReminderPermission();
+        if (permission === "unsupported")
+          throw new Error("This browser does not support notifications");
+        if (permission !== "granted")
+          throw new Error("Allow notifications to get a daily reminder");
+      }
+      await api.updateProfile(patch);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile"] }),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   return (
     <div className="space-y-4">
       <GlassCard className="space-y-3">
-        <h2 className="text-lg uppercase tracking-[0.14em]">Currency</h2>
+        <h2 className="font-display text-lg tracking-tight">Theme</h2>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {THEMES.map((t) => (
+            <button
+              key={t.name}
+              onClick={() => setTheme.mutate(t.name)}
+              className={cn(
+                "rounded-3xl border p-4 text-left transition-colors",
+                theme === t.name
+                  ? "border-primary bg-primary/15"
+                  : "border-border glass-soft hover:bg-foreground/5",
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-display text-base tracking-tight">{t.label}</span>
+                {theme === t.name && <Check className="h-4 w-4 text-primary" />}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{t.description}</p>
+              <div className="mt-3 flex gap-1.5">
+                {t.swatches.map((s) => (
+                  <span
+                    key={s}
+                    className="h-5 w-5 rounded-full border border-white/10"
+                    style={{ backgroundColor: s }}
+                  />
+                ))}
+              </div>
+            </button>
+          ))}
+        </div>
+      </GlassCard>
+
+      <GlassCard className="space-y-3">
+        <h2 className="flex items-center gap-2 font-display text-lg tracking-tight">
+          <BellRing className="h-4 w-4 text-primary" /> Daily reminder
+        </h2>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm">Remind me to log expenses</p>
+            <p className="text-xs text-muted-foreground">
+              A gentle daily nudge so nothing goes unlogged.
+            </p>
+          </div>
+          <Switch
+            checked={reminderEnabled}
+            onCheckedChange={(v) => saveReminder.mutate({ reminder_enabled: v })}
+          />
+        </div>
+        {reminderEnabled && (
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="reminder-time" className="text-sm">
+              Time
+            </Label>
+            <Input
+              id="reminder-time"
+              type="time"
+              value={reminderTime}
+              onChange={(e) => saveReminder.mutate({ reminder_time: e.target.value })}
+              className="h-10 w-32 bg-input/40"
+            />
+          </div>
+        )}
+      </GlassCard>
+
+      <GlassCard className="space-y-3">
+        <h2 className="font-display text-lg tracking-tight">Currency</h2>
         <Select value={currency} onValueChange={(v) => saveCurrency.mutate(v)}>
           <SelectTrigger className="h-11 bg-input/40">
             <SelectValue />
@@ -327,6 +415,19 @@ function SettingsPage() {
           </Button>
         </form>
       </GlassCard>
+
+      <Link
+        to="/privacy"
+        className="flex items-center gap-3 rounded-3xl glass-soft px-5 py-4 text-sm transition-colors hover:bg-foreground/5"
+      >
+        <ShieldCheck className="h-5 w-5 text-primary" />
+        <span>
+          <span className="block font-medium">Privacy &amp; data policy</span>
+          <span className="text-xs text-muted-foreground">
+            What is stored, where it lives, how it is secured and how to delete it.
+          </span>
+        </span>
+      </Link>
     </div>
   );
 }

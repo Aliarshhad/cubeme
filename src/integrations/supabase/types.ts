@@ -231,6 +231,9 @@ export type Database = {
           currency: string
           display_name: string | null
           id: string
+          reminder_enabled: boolean
+          reminder_time: string
+          theme: string
           updated_at: string
         }
         Insert: {
@@ -239,6 +242,9 @@ export type Database = {
           currency?: string
           display_name?: string | null
           id: string
+          reminder_enabled?: boolean
+          reminder_time?: string
+          theme?: string
           updated_at?: string
         }
         Update: {
@@ -247,6 +253,9 @@ export type Database = {
           currency?: string
           display_name?: string | null
           id?: string
+          reminder_enabled?: boolean
+          reminder_time?: string
+          theme?: string
           updated_at?: string
         }
         Relationships: []

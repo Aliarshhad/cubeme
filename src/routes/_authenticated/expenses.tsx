@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, ScanLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
 import { ExpenseDialog } from "@/components/ExpenseDialog";
 import { MonthSwitcher } from "@/components/MonthSwitcher";
+import { ReceiptScanner } from "@/components/ReceiptScanner";
 import { Button } from "@/components/ui/button";
 import { useCategories, useCurrency, useExpenses, useMonthState } from "@/hooks/use-cube";
 import * as api from "@/lib/api";
@@ -41,6 +42,8 @@ function Expenses() {
   const [filter, setFilter] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<api.Expense | undefined>();
+  const [scanOpen, setScanOpen] = useState(false);
+
 
   const remove = useMutation({
     mutationFn: (id: string) => api.deleteExpense(id),
@@ -69,19 +72,25 @@ function Expenses() {
       <MonthSwitcher label={label} onPrev={prev} onNext={next} />
 
       <div className="flex items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Total</p>
-          <p className="font-display text-3xl text-glow">{formatMoney(total, currency)}</p>
+          <p className="truncate font-display text-3xl text-glow">{formatMoney(total, currency)}</p>
         </div>
-        <Button
-          onClick={() => {
-            setEditing(undefined);
-            setDialogOpen(true);
-          }}
-        >
-          <Plus className="mr-1 h-4 w-4" /> Add
-        </Button>
+        <div className="flex shrink-0 gap-2">
+          <Button variant="secondary" onClick={() => setScanOpen(true)}>
+            <ScanLine className="mr-1 h-4 w-4" /> Scan
+          </Button>
+          <Button
+            onClick={() => {
+              setEditing(undefined);
+              setDialogOpen(true);
+            }}
+          >
+            <Plus className="mr-1 h-4 w-4" /> Add
+          </Button>
+        </div>
       </div>
+
 
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
         <FilterChip active={filter === null} onClick={() => setFilter(null)} label="All" />
@@ -147,6 +156,7 @@ function Expenses() {
       )}
 
       <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} expense={editing} />
+      <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
     </div>
   );
 }
