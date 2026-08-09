@@ -42,6 +42,8 @@ function Expenses() {
   const [filter, setFilter] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<api.Expense | undefined>();
+  const [scanOpen, setScanOpen] = useState(false);
+
 
   const remove = useMutation({
     mutationFn: (id: string) => api.deleteExpense(id),
