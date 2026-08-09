@@ -172,12 +172,22 @@ function Dashboard() {
         </GlassCard>
       )}
 
-      <Button
-        className="h-14 w-full rounded-3xl text-base font-semibold"
-        onClick={() => setAddOpen(true)}
-      >
-        <Plus className="mr-1 h-5 w-5" /> Add expense
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          className="h-14 flex-1 rounded-3xl text-base font-semibold"
+          onClick={() => setAddOpen(true)}
+        >
+          <Plus className="mr-1 h-5 w-5" /> Add expense
+        </Button>
+        <Button
+          variant="secondary"
+          className="h-14 rounded-3xl px-5 text-base font-semibold"
+          onClick={() => setScanOpen(true)}
+        >
+          <ScanLine className="mr-1 h-5 w-5" /> Scan
+        </Button>
+      </div>
+
 
 
       {pending.length > 0 && (
