@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Repeat, TrendingDown, TrendingUp, Pencil, BellRing } from "lucide-react";
+import { Plus, Repeat, TrendingDown, TrendingUp, Pencil, BellRing, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 
 import { AmountDisplay } from "@/components/AmountDisplay";
+import { ReceiptScanner } from "@/components/ReceiptScanner";
 import { GlassCard } from "@/components/AppShell";
 import { MonthSwitcher } from "@/components/MonthSwitcher";
 import { ExpenseDialog } from "@/components/ExpenseDialog";
