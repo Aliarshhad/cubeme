@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, ScanLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
 import { ExpenseDialog } from "@/components/ExpenseDialog";
 import { MonthSwitcher } from "@/components/MonthSwitcher";
+import { ReceiptScanner } from "@/components/ReceiptScanner";
 import { Button } from "@/components/ui/button";
 import { useCategories, useCurrency, useExpenses, useMonthState } from "@/hooks/use-cube";
 import * as api from "@/lib/api";
