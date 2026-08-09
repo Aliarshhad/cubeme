@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, Pencil, Plus, Repeat, Trash2, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BellRing, Check, Pencil, Plus, Repeat, ShieldCheck, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -17,8 +17,12 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useCategories, useProfile, useRecurring } from "@/hooks/use-cube";
+import { useTheme } from "@/hooks/use-theme";
 import * as api from "@/lib/api";
 import { CURRENCIES, formatMoney } from "@/lib/format";
+import { requestReminderPermission } from "@/lib/reminders";
+import { THEMES } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
