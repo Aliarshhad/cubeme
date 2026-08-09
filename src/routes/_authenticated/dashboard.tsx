@@ -89,7 +89,7 @@ function Dashboard() {
   const spent = (expenses.data ?? []).reduce((s, e) => s + e.amount, 0);
   const { lent, borrowed } = debtTotals(debts.data ?? []);
   const remaining = budgetAmount - spent - lent + borrowed;
-  const today = todayISO();
+  const today = new Date().toLocaleDateString("en-CA");
   const loggedToday = (expenses.data ?? []).some((e) => e.spent_on === today);
 
   const byCategory = (categories.data ?? [])
