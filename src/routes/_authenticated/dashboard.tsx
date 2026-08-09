@@ -61,6 +61,7 @@ function Dashboard() {
   const [editingBudget, setEditingBudget] = useState(false);
   const [budgetDraft, setBudgetDraft] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
 
   const saveBudget = useMutation({
     mutationFn: (amount: number) => api.setBudget(month, amount),
