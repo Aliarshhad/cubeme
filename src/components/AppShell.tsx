@@ -23,6 +23,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const profile = useProfile();
   const avatar = useSignedUrl("avatars", profile.data?.avatar_url);
+  useTheme();
+  useDailyReminder(
+    profile.data?.reminder_enabled ?? false,
+    (profile.data?.reminder_time ?? "21:00").slice(0, 5),
+  );
+
 
   async function signOut() {
     await queryClient.cancelQueries();
