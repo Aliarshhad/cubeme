@@ -72,19 +72,25 @@ function Expenses() {
       <MonthSwitcher label={label} onPrev={prev} onNext={next} />
 
       <div className="flex items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Total</p>
-          <p className="font-display text-3xl text-glow">{formatMoney(total, currency)}</p>
+          <p className="truncate font-display text-3xl text-glow">{formatMoney(total, currency)}</p>
         </div>
-        <Button
-          onClick={() => {
-            setEditing(undefined);
-            setDialogOpen(true);
-          }}
-        >
-          <Plus className="mr-1 h-4 w-4" /> Add
-        </Button>
+        <div className="flex shrink-0 gap-2">
+          <Button variant="secondary" onClick={() => setScanOpen(true)}>
+            <ScanLine className="mr-1 h-4 w-4" /> Scan
+          </Button>
+          <Button
+            onClick={() => {
+              setEditing(undefined);
+              setDialogOpen(true);
+            }}
+          >
+            <Plus className="mr-1 h-4 w-4" /> Add
+          </Button>
+        </div>
       </div>
+
 
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
         <FilterChip active={filter === null} onClick={() => setFilter(null)} label="All" />
