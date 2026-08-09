@@ -5,7 +5,9 @@ import type { ReactNode } from "react";
 
 import { CubeWordmark } from "@/components/CubeLogo";
 import { useProfile, useSignedUrl } from "@/hooks/use-cube";
+import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
+import { useDailyReminder } from "@/lib/reminders";
 import { cn } from "@/lib/utils";
 
 const tabs = [
