@@ -13,9 +13,9 @@ export function AmountDisplay({
 }: {
   value: number;
   currency: string;
-  className?: string;
-  size?: "hero" | "stat";
-  tone?: string;
+  className?: string | undefined;
+  size?: "hero" | "stat" | undefined;
+  tone?: string | undefined;
 }) {
   const full = format(value, currency, false);
   const compact = format(value, currency, true);
