@@ -156,6 +156,7 @@ function Expenses() {
       )}
 
       <ExpenseDialog open={dialogOpen} onOpenChange={setDialogOpen} expense={editing} />
+      <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
     </div>
   );
 }
