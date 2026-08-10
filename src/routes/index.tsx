@@ -27,7 +27,7 @@ const features = [
   {
     icon: WalletMinimal,
     title: "Monthly budget",
-    body: "Set a budget for each month and watch what is truly left, day by day.",
+    body: "Set what you've got for the month and watch what's actually left, day by day — not just what your bank balance says, since half of that is already owed to someone.",
   },
   {
     icon: PieChart,
@@ -37,7 +37,7 @@ const features = [
   {
     icon: HandCoins,
     title: "Lend & borrow",
-    body: "Lending drops your balance, borrowing lifts it. Settle any time.",
+    body: "Stop keeping loans in your head, your notes app, or a WhatsApp chat you'll never scroll back to. Log what you lent and what you borrowed, and settle without the awkward “hey, remember that 3,000…”",
   },
   {
     icon: CloudCheck,
