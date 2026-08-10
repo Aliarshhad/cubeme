@@ -169,11 +169,17 @@ function SettingsPage() {
 
   return (
     <div className="space-y-4">
+      <GlassCard className="space-y-2">
+        <h2 className="font-display text-lg tracking-tight">You&apos;re on early access — free</h2>
+        <p className="text-sm text-muted-foreground">
+          Everything in Cube is free right now while we&apos;re building it out. If we ever introduce
+          paid features down the line, what you&apos;re using today stays free for you.
+        </p>
+      </GlassCard>
+
       <GlassCard className="space-y-3">
         <h2 className="font-display text-lg tracking-tight">Theme</h2>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {THEMES.map((t) => (
-            <button
+        <div className="grid gap-2 sm:grid-cols-3">
               key={t.name}
               onClick={() => setTheme.mutate(t.name)}
               className={cn(
