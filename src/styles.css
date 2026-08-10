@@ -350,3 +350,66 @@
     display: none;
   }
 }
+
+/* ---- Pre-loader: 3D tumbling cube, pulsing glow, blinking dots ---- */
+@keyframes cube-tumble {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  25% {
+    transform: rotateY(90deg) rotateX(8deg);
+  }
+  50% {
+    transform: rotateY(180deg) rotateX(0deg);
+  }
+  75% {
+    transform: rotateY(270deg) rotateX(-8deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(0deg);
+  }
+}
+
+@keyframes cube-glow-pulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes cube-dot-blink {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@utility cube-tumble-scene {
+  perspective: 700px;
+  transform-style: preserve-3d;
+}
+
+@utility cube-tumble {
+  transform-style: preserve-3d;
+  animation: cube-tumble 2.4s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: cube-glow-pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@utility cube-glow-pulse {
+  animation: cube-glow-pulse 2.2s ease-in-out infinite;
+}
+
+@utility cube-dot {
+  animation: cube-dot-blink 1.2s ease-in-out infinite;
+}
