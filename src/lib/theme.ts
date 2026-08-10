@@ -1,4 +1,4 @@
-export type ThemeName = "founder" | "taurus";
+export type ThemeName = "founder" | "taurus" | "butterfly";
 
 export const THEME_STORAGE_KEY = "cube-theme";
 
@@ -19,14 +19,21 @@ export const THEMES: {
   {
     name: "taurus",
     label: "Taurus",
-    description: "Neon lime noir — electric green glow on black glass.",
-    swatches: ["#0a1002", "#172800", "#65a800", "#9cff00"],
-    themeColor: "#0a1002",
+    description: "Olive noir — deep forest green satin on black.",
+    swatches: ["#050704", "#1b2412", "#42561f", "#7d9b3f"],
+    themeColor: "#050704",
+  },
+  {
+    name: "butterfly",
+    label: "Butterfly",
+    description: "Azure noir — midnight blue glass with electric cyan.",
+    swatches: ["#03060f", "#0b1a3a", "#1461c4", "#38bdf8"],
+    themeColor: "#03060f",
   },
 ];
 
 export function isThemeName(value: unknown): value is ThemeName {
-  return value === "founder" || value === "taurus";
+  return value === "founder" || value === "taurus" || value === "butterfly";
 }
 
 export function themeColorFor(name: ThemeName) {

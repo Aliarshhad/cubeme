@@ -27,7 +27,7 @@ const features = [
   {
     icon: WalletMinimal,
     title: "Monthly budget",
-    body: "Set a budget for each month and watch what is truly left, day by day.",
+    body: "Set what you've got for the month and watch what's actually left, day by day — not just what your bank balance says, since half of that is already owed to someone.",
   },
   {
     icon: PieChart,
@@ -37,7 +37,7 @@ const features = [
   {
     icon: HandCoins,
     title: "Lend & borrow",
-    body: "Lending drops your balance, borrowing lifts it. Settle any time.",
+    body: "Stop keeping loans in your head, your notes app, or a WhatsApp chat you'll never scroll back to. Log what you lent and what you borrowed, and settle without the awkward “hey, remember that 3,000…”",
   },
   {
     icon: CloudCheck,
@@ -59,10 +59,17 @@ function Landing() {
           Money needs to move and flow to grow rather than stay still. When you circulates, it
           multiplies.
         </p>
+        <p className="mt-3 max-w-lg text-sm text-muted-foreground">
+          Cube is free while we build it. No card, no trial clock, no catch.
+        </p>
+
+        <span className="glass-soft mt-8 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium tracking-tight text-foreground/80">
+          Free during early access
+        </span>
 
         <Link
           to="/auth"
-          className="mt-8 inline-flex h-14 items-center justify-center rounded-3xl bg-primary px-9 font-display text-base font-semibold tracking-tight text-primary-foreground transition-transform hover:scale-[1.02]"
+          className="mt-4 inline-flex h-14 items-center justify-center rounded-3xl bg-primary px-9 font-display text-base font-semibold tracking-tight text-primary-foreground transition-transform hover:scale-[1.02]"
         >
           Open Cube
         </Link>
