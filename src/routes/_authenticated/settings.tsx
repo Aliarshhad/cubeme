@@ -180,6 +180,8 @@ function SettingsPage() {
       <GlassCard className="space-y-3">
         <h2 className="font-display text-lg tracking-tight">Theme</h2>
         <div className="grid gap-2 sm:grid-cols-3">
+          {THEMES.map((t) => (
+            <button
               key={t.name}
               onClick={() => setTheme.mutate(t.name)}
               className={cn(
