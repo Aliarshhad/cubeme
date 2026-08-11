@@ -437,7 +437,7 @@ export async function updateReceiptItem(
 /* ---------------- debts / transfers ---------------- */
 
 const DEBT_COLS =
-  "id, direction, person, amount, occurred_on, note, purpose, settled_at, expected_return_on, currency, original_amount, fx_rate";
+  "id, direction, person, amount, occurred_on, note, purpose, settled_at, expected_return_on, returned_on, currency, original_amount, fx_rate";
 
 export async function fetchDebts(): Promise<Debt[]> {
   const { data, error } = await supabase
@@ -479,9 +479,13 @@ export async function updateDebt(id: string, patch: Partial<DebtInput>) {
 }
 
 export async function setDebtSettled(id: string, settled: boolean) {
+  const now = new Date();
   const { error } = await supabase
     .from("debts")
-    .update({ settled_at: settled ? new Date().toISOString() : null })
+    .update({
+      settled_at: settled ? now.toISOString() : null,
+      returned_on: settled ? now.toLocaleDateString("en-CA") : null,
+    })
     .eq("id", id);
   if (error) throw error;
 }
