@@ -18,7 +18,6 @@ import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedLedgerRouteImport } from './routes/_authenticated/ledger'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,11 +64,6 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
@@ -86,7 +80,6 @@ export interface FileRoutesByFullPath {
   '/history': typeof AuthenticatedHistoryRoute
   '/ledger': typeof AuthenticatedLedgerRoute
   '/profile': typeof AuthenticatedProfileRoute
-  '/settings': typeof AuthenticatedSettingsRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
 }
 export interface FileRoutesByTo {
@@ -98,7 +91,6 @@ export interface FileRoutesByTo {
   '/history': typeof AuthenticatedHistoryRoute
   '/ledger': typeof AuthenticatedLedgerRoute
   '/profile': typeof AuthenticatedProfileRoute
-  '/settings': typeof AuthenticatedSettingsRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
 }
 export interface FileRoutesById {
@@ -112,7 +104,6 @@ export interface FileRoutesById {
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/ledger': typeof AuthenticatedLedgerRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
 }
 export interface FileRouteTypes {
@@ -126,7 +117,6 @@ export interface FileRouteTypes {
     | '/history'
     | '/ledger'
     | '/profile'
-    | '/settings'
     | '/api/public/hooks/daily-reminder'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -138,7 +128,6 @@ export interface FileRouteTypes {
     | '/history'
     | '/ledger'
     | '/profile'
-    | '/settings'
     | '/api/public/hooks/daily-reminder'
   id:
     | '__root__'
@@ -151,7 +140,6 @@ export interface FileRouteTypes {
     | '/_authenticated/history'
     | '/_authenticated/ledger'
     | '/_authenticated/profile'
-    | '/_authenticated/settings'
     | '/api/public/hooks/daily-reminder'
   fileRoutesById: FileRoutesById
 }
@@ -228,13 +216,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
@@ -251,7 +232,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedLedgerRoute: typeof AuthenticatedLedgerRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -260,7 +240,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedLedgerRoute: AuthenticatedLedgerRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
