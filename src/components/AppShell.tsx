@@ -19,6 +19,14 @@ const tabs = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <TourProvider>
+      <AppShellInner>{children}</AppShellInner>
+    </TourProvider>
+  );
+}
+
+function AppShellInner({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const profile = useProfile();
