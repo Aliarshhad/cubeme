@@ -34,6 +34,7 @@ export type Debt = {
   purpose: string | null;
   settled_at: string | null;
   expected_return_on: string | null;
+  returned_on: string | null;
   currency: string | null;
   original_amount: number | null;
   fx_rate: number;
@@ -56,6 +57,7 @@ export type Profile = {
   theme: string;
   reminder_enabled: boolean;
   reminder_time: string;
+  tour_completed_at: string | null;
 };
 
 export type FxRate = {
@@ -135,6 +137,7 @@ export async function updateProfile(patch: {
   theme?: string;
   reminder_enabled?: boolean;
   reminder_time?: string;
+  tour_completed_at?: string | null;
 }) {
   const id = await uid();
   const { error } = await supabase.from("profiles").update(patch).eq("id", id);
