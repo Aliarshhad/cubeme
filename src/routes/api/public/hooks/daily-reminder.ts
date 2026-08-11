@@ -72,9 +72,13 @@ export const Route = createFileRoute("/api/public/hooks/daily-reminder")({
               vapid,
             );
 
+            const headers = Object.fromEntries(
+              Object.entries(payload.headers).filter(([, v]) => typeof v === "string"),
+            ) as Record<string, string>;
+
             const res = await fetch(row.endpoint, {
               method: payload.method,
-              headers: payload.headers,
+              headers,
               body: payload.body as unknown as BodyInit,
             });
 
