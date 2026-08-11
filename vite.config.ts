@@ -22,6 +22,7 @@ export default defineConfig({
         devOptions: { enabled: false },
         manifest: false,
         workbox: {
+          importScripts: ["/push-handler.js"],
           navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//, /^\/_serverFn/],
           runtimeCaching: [
             {
