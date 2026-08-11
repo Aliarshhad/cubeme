@@ -413,3 +413,27 @@
 @utility cube-dot {
   animation: cube-dot-blink 1.2s ease-in-out infinite;
 }
+
+@keyframes tour-ring-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 9999px rgba(0, 0, 0, 0.78),
+      0 0 0 2px rgba(242, 163, 172, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 9999px rgba(0, 0, 0, 0.78),
+      0 0 0 7px rgba(242, 163, 172, 0.18);
+  }
+}
+
+@utility tour-ring {
+  border: 2px dashed #f2a3ac;
+  animation: tour-ring-pulse 1.6s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.78);
+  }
+}

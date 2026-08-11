@@ -18,7 +18,11 @@ import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedLedgerRouteImport } from './routes/_authenticated/ledger'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedSettingsCategoriesRouteImport } from './routes/_authenticated/settings/categories'
+import { Route as AuthenticatedSettingsCurrencyRouteImport } from './routes/_authenticated/settings/currency'
+import { Route as AuthenticatedSettingsWhatsNewRouteImport } from './routes/_authenticated/settings/whats-new'
+import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,11 +68,36 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedSettingsIndexRoute =
+  AuthenticatedSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsCategoriesRoute =
+  AuthenticatedSettingsCategoriesRouteImport.update({
+    id: '/settings/categories',
+    path: '/settings/categories',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsCurrencyRoute =
+  AuthenticatedSettingsCurrencyRouteImport.update({
+    id: '/settings/currency',
+    path: '/settings/currency',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsWhatsNewRoute =
+  AuthenticatedSettingsWhatsNewRouteImport.update({
+    id: '/settings/whats-new',
+    path: '/settings/whats-new',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiPublicHooksDailyReminderRoute =
+  ApiPublicHooksDailyReminderRouteImport.update({
+    id: '/api/public/hooks/daily-reminder',
+    path: '/api/public/hooks/daily-reminder',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -79,7 +108,11 @@ export interface FileRoutesByFullPath {
   '/history': typeof AuthenticatedHistoryRoute
   '/ledger': typeof AuthenticatedLedgerRoute
   '/profile': typeof AuthenticatedProfileRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/settings/categories': typeof AuthenticatedSettingsCategoriesRoute
+  '/settings/currency': typeof AuthenticatedSettingsCurrencyRoute
+  '/settings/whats-new': typeof AuthenticatedSettingsWhatsNewRoute
+  '/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -90,7 +123,11 @@ export interface FileRoutesByTo {
   '/history': typeof AuthenticatedHistoryRoute
   '/ledger': typeof AuthenticatedLedgerRoute
   '/profile': typeof AuthenticatedProfileRoute
-  '/settings': typeof AuthenticatedSettingsRoute
+  '/settings/categories': typeof AuthenticatedSettingsCategoriesRoute
+  '/settings/currency': typeof AuthenticatedSettingsCurrencyRoute
+  '/settings/whats-new': typeof AuthenticatedSettingsWhatsNewRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
+  '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -103,7 +140,11 @@ export interface FileRoutesById {
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/ledger': typeof AuthenticatedLedgerRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/settings/categories': typeof AuthenticatedSettingsCategoriesRoute
+  '/_authenticated/settings/currency': typeof AuthenticatedSettingsCurrencyRoute
+  '/_authenticated/settings/whats-new': typeof AuthenticatedSettingsWhatsNewRoute
+  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -116,7 +157,11 @@ export interface FileRouteTypes {
     | '/history'
     | '/ledger'
     | '/profile'
-    | '/settings'
+    | '/settings/categories'
+    | '/settings/currency'
+    | '/settings/whats-new'
+    | '/settings/'
+    | '/api/public/hooks/daily-reminder'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -127,7 +172,11 @@ export interface FileRouteTypes {
     | '/history'
     | '/ledger'
     | '/profile'
+    | '/settings/categories'
+    | '/settings/currency'
+    | '/settings/whats-new'
     | '/settings'
+    | '/api/public/hooks/daily-reminder'
   id:
     | '__root__'
     | '/'
@@ -139,7 +188,11 @@ export interface FileRouteTypes {
     | '/_authenticated/history'
     | '/_authenticated/ledger'
     | '/_authenticated/profile'
-    | '/_authenticated/settings'
+    | '/_authenticated/settings/categories'
+    | '/_authenticated/settings/currency'
+    | '/_authenticated/settings/whats-new'
+    | '/_authenticated/settings/'
+    | '/api/public/hooks/daily-reminder'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -147,6 +200,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   PrivacyRoute: typeof PrivacyRoute
+  ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -214,12 +268,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
+    '/_authenticated/settings/': {
+      id: '/_authenticated/settings/'
       path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/categories': {
+      id: '/_authenticated/settings/categories'
+      path: '/settings/categories'
+      fullPath: '/settings/categories'
+      preLoaderRoute: typeof AuthenticatedSettingsCategoriesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/currency': {
+      id: '/_authenticated/settings/currency'
+      path: '/settings/currency'
+      fullPath: '/settings/currency'
+      preLoaderRoute: typeof AuthenticatedSettingsCurrencyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/whats-new': {
+      id: '/_authenticated/settings/whats-new'
+      path: '/settings/whats-new'
+      fullPath: '/settings/whats-new'
+      preLoaderRoute: typeof AuthenticatedSettingsWhatsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/hooks/daily-reminder': {
+      id: '/api/public/hooks/daily-reminder'
+      path: '/api/public/hooks/daily-reminder'
+      fullPath: '/api/public/hooks/daily-reminder'
+      preLoaderRoute: typeof ApiPublicHooksDailyReminderRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -230,7 +312,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedLedgerRoute: typeof AuthenticatedLedgerRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSettingsCategoriesRoute: typeof AuthenticatedSettingsCategoriesRoute
+  AuthenticatedSettingsCurrencyRoute: typeof AuthenticatedSettingsCurrencyRoute
+  AuthenticatedSettingsWhatsNewRoute: typeof AuthenticatedSettingsWhatsNewRoute
+  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -239,7 +324,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedLedgerRoute: AuthenticatedLedgerRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSettingsCategoriesRoute: AuthenticatedSettingsCategoriesRoute,
+  AuthenticatedSettingsCurrencyRoute: AuthenticatedSettingsCurrencyRoute,
+  AuthenticatedSettingsWhatsNewRoute: AuthenticatedSettingsWhatsNewRoute,
+  AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -250,17 +338,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   PrivacyRoute: PrivacyRoute,
+  ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

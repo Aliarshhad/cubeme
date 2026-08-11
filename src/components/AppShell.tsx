@@ -4,6 +4,7 @@ import { Home, Receipt, HandCoins, Settings, LogOut, History, User } from "lucid
 import type { ReactNode } from "react";
 
 import { CubeWordmark } from "@/components/CubeLogo";
+import { TourProvider } from "@/components/tour/TourProvider";
 import { useProfile, useSignedUrl } from "@/hooks/use-cube";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,14 @@ const tabs = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <TourProvider>
+      <AppShellInner>{children}</AppShellInner>
+    </TourProvider>
+  );
+}
+
+function AppShellInner({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const profile = useProfile();
