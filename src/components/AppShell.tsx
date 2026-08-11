@@ -4,6 +4,7 @@ import { Home, Receipt, HandCoins, Settings, LogOut, History, User } from "lucid
 import type { ReactNode } from "react";
 
 import { CubeWordmark } from "@/components/CubeLogo";
+import { TourProvider } from "@/components/tour/TourProvider";
 import { useProfile, useSignedUrl } from "@/hooks/use-cube";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
