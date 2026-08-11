@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          description: string
+          id: string
+          meta: Json | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          description: string
+          id?: string
+          meta?: Json | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          description?: string
+          id?: string
+          meta?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string
@@ -58,6 +85,7 @@ export type Database = {
           original_amount: number | null
           person: string
           purpose: string | null
+          returned_on: string | null
           settled_at: string | null
           updated_at: string
           user_id: string
@@ -75,6 +103,7 @@ export type Database = {
           original_amount?: number | null
           person: string
           purpose?: string | null
+          returned_on?: string | null
           settled_at?: string | null
           updated_at?: string
           user_id: string
@@ -92,6 +121,7 @@ export type Database = {
           original_amount?: number | null
           person?: string
           purpose?: string | null
+          returned_on?: string | null
           settled_at?: string | null
           updated_at?: string
           user_id?: string
@@ -234,6 +264,7 @@ export type Database = {
           reminder_enabled: boolean
           reminder_time: string
           theme: string
+          tour_completed_at: string | null
           updated_at: string
         }
         Insert: {
@@ -245,6 +276,7 @@ export type Database = {
           reminder_enabled?: boolean
           reminder_time?: string
           theme?: string
+          tour_completed_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -256,7 +288,50 @@ export type Database = {
           reminder_enabled?: boolean
           reminder_time?: string
           theme?: string
+          tour_completed_at?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          enabled: boolean
+          endpoint: string
+          id: string
+          last_sent_on: string | null
+          p256dh: string
+          reminder_time: string
+          tz_offset_minutes: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          enabled?: boolean
+          endpoint: string
+          id?: string
+          last_sent_on?: string | null
+          p256dh: string
+          reminder_time?: string
+          tz_offset_minutes?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          enabled?: boolean
+          endpoint?: string
+          id?: string
+          last_sent_on?: string | null
+          p256dh?: string
+          reminder_time?: string
+          tz_offset_minutes?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
