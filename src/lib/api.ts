@@ -121,7 +121,7 @@ async function uid() {
 export async function fetchProfile(): Promise<Profile> {
   const id = await uid();
   const cols =
-    "id, display_name, currency, avatar_url, theme, reminder_enabled, reminder_time";
+    "id, display_name, currency, avatar_url, theme, reminder_enabled, reminder_time, tour_completed_at";
   const { data, error } = await supabase.from("profiles").select(cols).eq("id", id).maybeSingle();
   if (error) throw error;
   if (data) return data as Profile;
