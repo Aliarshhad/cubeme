@@ -28,7 +28,11 @@ export const Route = createFileRoute("/api/public/hooks/daily-reminder")({
     handlers: {
       POST: async ({ request }) => {
         const apikey = request.headers.get("apikey");
-        if (!apikey || apikey !== process.env["SUPABASE_ANON_KEY"]) {
+        const allowed = [
+          process.env["SUPABASE_ANON_KEY"],
+          process.env["SUPABASE_PUBLISHABLE_KEY"],
+        ].filter(Boolean);
+        if (!apikey || !allowed.includes(apikey)) {
           return new Response("Unauthorized", { status: 401 });
         }
 
