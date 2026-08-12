@@ -83,24 +83,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "Cube" },
+      { title: "Cube — Calculate your budget every day" },
       {
         name: "description",
         content:
-          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+          "Set a monthly budget, log expenses by category, and track who you've lent to or borrowed from — all in one clean, distraction-free app.",
       },
       { name: "theme-color", content: "#0a0507" },
-      { property: "og:title", content: "Cube" },
+      { property: "og:site_name", content: "Cube" },
+      { property: "og:title", content: "Cube — Calculate your budget every day" },
       {
         property: "og:description",
-        content: "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+        content:
+          "Set a monthly budget, log expenses by category, and track who you've lent to or borrowed from — all in one clean, distraction-free app.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cube" },
-      { name: "twitter:description", content: "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean." },
+      { name: "twitter:title", content: "Cube — Calculate your budget every day" },
+      {
+        name: "twitter:description",
+        content:
+          "Set a monthly budget, log expenses by category, and track who you've lent to or borrowed from — all in one clean, distraction-free app.",
+      },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/76828df5-8409-47a7-b191-6726e9621e1d" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/76828df5-8409-47a7-b191-6726e9621e1d" },
+
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
