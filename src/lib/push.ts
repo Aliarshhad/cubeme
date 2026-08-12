@@ -98,7 +98,7 @@ export async function enablePushReminder(time: string) {
 
 export async function updatePushReminderTime(time: string) {
   if (!pushSupported()) return;
-  const registration = await navigator.serviceWorker.getRegistration();
+  const registration = await getPushRegistration();
   const subscription = await registration?.pushManager.getSubscription();
   if (!subscription) return;
   await supabase
@@ -109,7 +109,7 @@ export async function updatePushReminderTime(time: string) {
 
 export async function disablePushReminder() {
   if (!pushSupported()) return;
-  const registration = await navigator.serviceWorker.getRegistration();
+  const registration = await getPushRegistration();
   const subscription = await registration?.pushManager.getSubscription();
   if (!subscription) return;
   await supabase
@@ -117,3 +117,4 @@ export async function disablePushReminder() {
     .update({ enabled: false })
     .eq("endpoint", subscription.endpoint);
 }
+
