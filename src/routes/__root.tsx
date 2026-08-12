@@ -151,7 +151,9 @@ function RootComponent() {
 
   useEffect(() => {
     registerServiceWorker();
+    return captureInstallPrompt();
   }, []);
+
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
