@@ -11,11 +11,11 @@ import {
 } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useBudgets, useProfile } from "@/hooks/use-cube";
+import { useProfile } from "@/hooks/use-cube";
 import { logActivity } from "@/lib/activity";
 import * as api from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { TOUR_FLAG_KEY, TOUR_STEPS } from "./steps";
+import { TOUR_STEPS, tourFlagKey } from "./steps";
 
 type Rect = { top: number; left: number; width: number; height: number };
 
@@ -27,16 +27,15 @@ export function useTour() {
   return useContext(TourContext);
 }
 
-function localFlag() {
-  if (typeof localStorage === "undefined") return false;
-  return localStorage.getItem(TOUR_FLAG_KEY) === "1";
+function localFlag(userId?: string) {
+  if (typeof localStorage === "undefined" || !userId) return false;
+  return localStorage.getItem(tourFlagKey(userId)) === "1";
 }
 
 export function TourProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const profile = useProfile();
-  const budgets = useBudgets();
 
   const [index, setIndex] = useState<number | null>(null);
   const [rect, setRect] = useState<Rect | null>(null);
@@ -52,17 +51,17 @@ export function TourProvider({ children }: { children: ReactNode }) {
     void navigate({ to: "/dashboard" });
   }, [navigate]);
 
-  /* Auto-run once, after a first budget exists and only if never finished. */
-  const hasBudget = (budgets.data ?? []).some((b) => b.amount > 0);
-  const finished = !!profile.data?.tour_completed_at || localFlag();
+  /* Auto-run exactly once per account, as soon as the profile is loaded. */
+  const userId = profile.data?.id;
+  const finished = !!profile.data?.tour_completed_at || localFlag(userId);
 
   useEffect(() => {
-    if (!profile.data || !budgets.data) return;
+    if (!profile.data) return;
     if (finished || active || closing) return;
-    if (!hasBudget) return;
     startTour();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile.data, budgets.data, finished, hasBudget]);
+  }, [profile.data, finished]);
+
 
   /* Navigate to the step's screen. */
   useEffect(() => {
