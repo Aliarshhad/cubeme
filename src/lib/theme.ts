@@ -69,7 +69,7 @@ export function readStoredTheme(userId?: string): ThemeName {
 
 export function storeTheme(name: ThemeName, userId?: string) {
   if (typeof localStorage === "undefined" || !userId) return;
-  localStorage.setItem(themeKey(name ? userId : userId), name);
+  localStorage.setItem(themeKey(userId), name);
 }
 
 /** Drops every cached theme, including the legacy device-wide key. */
