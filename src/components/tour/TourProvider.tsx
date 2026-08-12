@@ -112,7 +112,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
     } catch {
       /* the local flag already prevents a repeat */
     }
-  }, [navigate, queryClient]);
+  }, [navigate, queryClient, userId]);
 
   const value = useMemo(() => ({ startTour, active }), [startTour, active]);
 
