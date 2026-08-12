@@ -11,30 +11,31 @@ import {
   type ThemeName,
 } from "@/lib/theme";
 
-/** Applies the stored theme immediately, then reconciles with the saved profile theme. */
+/** Applies this account's cached theme immediately, then reconciles with the saved profile theme. */
 export function useTheme() {
   const profile = useProfile();
   const queryClient = useQueryClient();
+  const userId = profile.data?.id;
   const saved = isThemeName(profile.data?.theme) ? profile.data.theme : null;
 
   useEffect(() => {
-    applyTheme(readStoredTheme());
-  }, []);
+    applyTheme(readStoredTheme(userId));
+  }, [userId]);
 
   useEffect(() => {
     if (!saved) return;
-    storeTheme(saved);
+    storeTheme(saved, userId);
     applyTheme(saved);
-  }, [saved]);
+  }, [saved, userId]);
 
   const setTheme = useMutation({
     mutationFn: async (name: ThemeName) => {
-      storeTheme(name);
+      storeTheme(name, userId);
       applyTheme(name);
       await api.updateProfile({ theme: name });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["profile"] }),
   });
 
-  return { theme: saved ?? readStoredTheme(), setTheme };
+  return { theme: saved ?? readStoredTheme(userId), setTheme };
 }
