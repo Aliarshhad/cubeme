@@ -92,7 +92,7 @@ function Expenses() {
       </div>
 
 
-      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1" data-tour="category-filter">
         <FilterChip active={filter === null} onClick={() => setFilter(null)} label="All" />
         {(categories.data ?? []).map((c) => (
           <FilterChip

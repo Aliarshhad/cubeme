@@ -55,7 +55,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     route: "/settings",
     target: "categories",
-    text: "Customize your categories, currency and recurring bills — all from here.",
+    text: "Customize your categories and currency — all from here.",
   },
 ];
 

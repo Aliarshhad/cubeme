@@ -103,7 +103,7 @@ function Ledger() {
         </div>
       </GlassCard>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" data-tour="ledger-actions">
         {TABS.map((t) => (
           <Button
             key={t.key}
@@ -201,10 +201,13 @@ function Row({
           )}
         </p>
         <p className="truncate text-xs text-muted-foreground">
-          {dayLabel(debt.occurred_on)}
+          {debt.direction === "lend" ? `Lent ${dayLabel(debt.occurred_on)}` : dayLabel(debt.occurred_on)}
+          {debt.returned_on ? ` · Returned ${dayLabel(debt.returned_on)}` : ""}
           {debt.purpose ? ` · ${debt.purpose}` : ""}
           {debt.note ? ` · ${debt.note}` : ""}
-          {debt.expected_return_on ? ` · due ${dayLabel(debt.expected_return_on)}` : ""}
+          {debt.expected_return_on && !debt.returned_on
+            ? ` · due ${dayLabel(debt.expected_return_on)}`
+            : ""}
         </p>
       </div>
       <div className="shrink-0 text-right">
