@@ -12,13 +12,12 @@ import {
 import {
   hasInstallPrompt,
   isIos,
-  isMobileDevice,
   isStandalone,
   subscribeInstallState,
   triggerInstallPrompt,
 } from "@/lib/install";
 
-/** "Install Cube" row — phones only, hidden once Cube runs as an installed app. */
+/** "Install Cube" row — hidden only once Cube runs as an installed app. */
 export function InstallCubeRow() {
   const [show, setShow] = useState(false);
   const [ios, setIos] = useState(false);
@@ -27,8 +26,11 @@ export function InstallCubeRow() {
 
   useEffect(() => {
     setIos(isIos());
-    setShow(isMobileDevice() && !isStandalone());
-    return subscribeInstallState(() => setTick((t) => t + 1));
+    setShow(!isStandalone());
+    return subscribeInstallState(() => {
+      setShow(!isStandalone());
+      setTick((t) => t + 1);
+    });
   }, []);
 
   if (!show) return null;
