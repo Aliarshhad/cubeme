@@ -33,7 +33,7 @@ function History() {
   const expenses = useAllExpenses();
   const budgets = useBudgets();
   const categories = useCategories();
-  const [view, setView] = useState<"daily" | "monthly">("daily");
+  const [view, setView] = useState<"daily" | "monthly" | "activity">("daily");
 
   const rows = expenses.data ?? [];
   const catName = (id: string | null) =>
@@ -44,8 +44,8 @@ function History() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        {(["daily", "monthly"] as const).map((v) => (
+      <div className="flex gap-2" data-tour="history-toggle">
+        {(["daily", "monthly", "activity"] as const).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
@@ -59,13 +59,15 @@ function History() {
         ))}
       </div>
 
-      {rows.length === 0 && (
+      {view !== "activity" && rows.length === 0 && (
         <GlassCard>
           <p className="text-sm text-muted-foreground">Nothing logged yet.</p>
         </GlassCard>
       )}
 
-      {view === "daily"
+      {view === "activity" ? (
+        <ActivityFeed />
+      ) : view === "daily"
         ? daily.map(([day, items, total]) => (
             <div key={day} className="space-y-2">
               <div className="flex items-center justify-between px-1">
