@@ -109,7 +109,7 @@ function Dashboard() {
       <MonthSwitcher label={label} onPrev={prev} onNext={next} />
 
       <GlassCard>
-        <div className="min-w-0 space-y-2">
+        <div className="min-w-0 space-y-2" data-tour="available">
           <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Available</p>
           <AmountDisplay
             value={remaining}
@@ -145,6 +145,7 @@ function Dashboard() {
                 setBudgetDraft(String(budgetAmount || ""));
                 setEditingBudget(true);
               }}
+              data-tour="budget"
               className="flex max-w-full items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <span className="truncate">Budget {formatMoney(budgetAmount, currency)}</span>
@@ -153,7 +154,7 @@ function Dashboard() {
           )}
         </div>
 
-        <div className="mt-5 grid grid-cols-3 gap-2 text-center">
+        <div className="mt-5 grid grid-cols-3 gap-2 text-center" data-tour="pills">
           <Stat label="Spent" value={spent} currency={currency} />
           <Stat label="Lent out" value={lent} currency={currency} tone="down" />
           <Stat label="Borrowed" value={borrowed} currency={currency} tone="up" />
@@ -176,12 +177,14 @@ function Dashboard() {
 
       <div className="flex gap-2">
         <Button
+          data-tour="add-expense"
           className="h-14 flex-1 rounded-3xl text-base font-semibold"
           onClick={() => setAddOpen(true)}
         >
           <Plus className="mr-1 h-5 w-5" /> Add expense
         </Button>
         <Button
+          data-tour="scan"
           variant="secondary"
           className="h-14 rounded-3xl px-5 text-base font-semibold"
           onClick={() => setScanOpen(true)}
