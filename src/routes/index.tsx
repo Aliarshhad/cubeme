@@ -6,17 +6,17 @@ import { CubeWordmark } from "@/components/CubeLogo";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Cube — Premium monthly budget planner" },
+      { title: "Cube" },
       {
         name: "description",
         content:
-          "Cube is a liquid-glass budgeting app: set a monthly budget, log expenses by category, and track lending and borrowing that adjusts your balance automatically.",
+          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
-      { property: "og:title", content: "Cube — Premium monthly budget planner" },
+      { property: "og:title", content: "Cube" },
       {
         property: "og:description",
         content:
-          "Set a monthly budget, log expenses by category, and track lending and borrowing in one dark, glassy app.",
+          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
     ],
   }),

@@ -83,20 +83,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "Cube — Budget & expense planner" },
+      { title: "Cube" },
       {
         name: "description",
         content:
-          "Cube is a premium monthly budget planner with expense tracking, custom categories and a lend/borrow ledger.",
+          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
       { name: "theme-color", content: "#0a0507" },
-      { property: "og:title", content: "Cube — Budget & expense planner" },
+      { property: "og:title", content: "Cube" },
       {
         property: "og:description",
-        content: "Monthly budgeting, expense tracking and lend/borrow ledger in one glassy app.",
+        content: "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cube" },
+      { name: "twitter:description", content: "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/76828df5-8409-47a7-b191-6726e9621e1d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/76828df5-8409-47a7-b191-6726e9621e1d" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -107,7 +111,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
 
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
     ],
