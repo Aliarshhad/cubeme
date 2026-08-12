@@ -15,7 +15,9 @@ import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
+import { InstallCubeRow } from "@/components/InstallCubeRow";
 import { useTour } from "@/components/tour/TourProvider";
+
 import {
   Accordion,
   AccordionContent,
