@@ -137,6 +137,69 @@ function History() {
   );
 }
 
+function ActivityFeed() {
+  const query = useInfiniteQuery({
+    queryKey: ["activity"],
+    queryFn: ({ pageParam }) => fetchActivity(pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (last, all) =>
+      last.length < ACTIVITY_PAGE_SIZE ? undefined : all.length,
+  });
+
+  const entries = query.data?.pages.flat() ?? [];
+
+  if (query.isLoading) {
+    return (
+      <GlassCard>
+        <p className="text-sm text-muted-foreground">Loading your activity…</p>
+      </GlassCard>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <GlassCard>
+        <p className="text-sm text-muted-foreground">
+          Nothing here yet. Everything you do in Cube shows up in this log.
+        </p>
+      </GlassCard>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <GlassCard className="divide-y divide-border p-0">
+        {entries.map((a) => (
+          <div key={a.id} className="px-4 py-3">
+            <p className="text-sm">{a.description}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{stamp(a.created_at)}</p>
+          </div>
+        ))}
+      </GlassCard>
+      {query.hasNextPage && (
+        <Button
+          variant="secondary"
+          className="h-11 w-full rounded-2xl"
+          disabled={query.isFetchingNextPage}
+          onClick={() => query.fetchNextPage()}
+        >
+          {query.isFetchingNextPage ? "Loading…" : "Load older activity"}
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function stamp(iso: string) {
+  const d = new Date(iso);
+  return `${d.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })} · ${d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`;
+}
+
+
 function groupTotals(rows: api.Expense[], keyOf: (e: api.Expense) => string) {
   const map = new Map<string, api.Expense[]>();
   for (const e of rows) {
