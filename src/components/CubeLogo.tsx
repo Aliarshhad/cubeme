@@ -1,4 +1,4 @@
-import logo from "@/assets/cube-logo.png.asset.json";
+import logo from "@/assets/cube-mark.png.asset.json";
 import { cn } from "@/lib/utils";
 
 export function CubeLogo({ className }: { className?: string }) {
