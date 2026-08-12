@@ -29,8 +29,8 @@ export function pushSupported() {
 async function pushRegistration() {
   if (!("serviceWorker" in navigator)) return null;
   try {
-    const registration = await navigator.serviceWorker.register("/push-sw.js", {
-      scope: "/push-sw-scope/",
+    const registration = await navigator.serviceWorker.register("/push/sw.js", {
+      scope: "/push/",
     });
     await navigator.serviceWorker.ready.catch(() => undefined);
     return registration;
@@ -41,9 +41,10 @@ async function pushRegistration() {
 
 export async function getPushRegistration() {
   if (!("serviceWorker" in navigator)) return null;
-  const existing = await navigator.serviceWorker.getRegistration("/push-sw-scope/");
+  const existing = await navigator.serviceWorker.getRegistration("/push/");
   return existing ?? null;
 }
+
 
 /**
  * Subscribes this device to push and stores the subscription so the scheduled
