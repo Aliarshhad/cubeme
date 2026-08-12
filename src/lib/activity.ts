@@ -22,12 +22,16 @@ export async function logActivity(action: string, description: string) {
   }
 }
 
-export async function fetchActivity(): Promise<ActivityEntry[]> {
+export const ACTIVITY_PAGE_SIZE = 50;
+
+/** Newest-first page of activity entries. `page` is zero-based. */
+export async function fetchActivity(page = 0): Promise<ActivityEntry[]> {
+  const from = page * ACTIVITY_PAGE_SIZE;
   const { data, error } = await supabase
     .from("activity_log")
     .select("id, action, description, created_at")
     .order("created_at", { ascending: false })
-    .limit(500);
+    .range(from, from + ACTIVITY_PAGE_SIZE - 1);
   if (error) throw error;
   return (data ?? []) as ActivityEntry[];
 }

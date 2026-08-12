@@ -1,8 +1,11 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { GlassCard } from "@/components/AppShell";
+import { Button } from "@/components/ui/button";
 import { useAllExpenses, useBudgets, useCategories, useCurrency } from "@/hooks/use-cube";
+import { ACTIVITY_PAGE_SIZE, fetchActivity } from "@/lib/activity";
 import * as api from "@/lib/api";
 import { dayLabel, formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -30,7 +33,7 @@ function History() {
   const expenses = useAllExpenses();
   const budgets = useBudgets();
   const categories = useCategories();
-  const [view, setView] = useState<"daily" | "monthly">("daily");
+  const [view, setView] = useState<"daily" | "monthly" | "activity">("daily");
 
   const rows = expenses.data ?? [];
   const catName = (id: string | null) =>
@@ -41,8 +44,8 @@ function History() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        {(["daily", "monthly"] as const).map((v) => (
+      <div className="flex gap-2" data-tour="history-toggle">
+        {(["daily", "monthly", "activity"] as const).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
@@ -56,13 +59,15 @@ function History() {
         ))}
       </div>
 
-      {rows.length === 0 && (
+      {view !== "activity" && rows.length === 0 && (
         <GlassCard>
           <p className="text-sm text-muted-foreground">Nothing logged yet.</p>
         </GlassCard>
       )}
 
-      {view === "daily"
+      {view === "activity" ? (
+        <ActivityFeed />
+      ) : view === "daily"
         ? daily.map(([day, items, total]) => (
             <div key={day} className="space-y-2">
               <div className="flex items-center justify-between px-1">
@@ -131,6 +136,69 @@ function History() {
     </div>
   );
 }
+
+function ActivityFeed() {
+  const query = useInfiniteQuery({
+    queryKey: ["activity"],
+    queryFn: ({ pageParam }) => fetchActivity(pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (last, all) =>
+      last.length < ACTIVITY_PAGE_SIZE ? undefined : all.length,
+  });
+
+  const entries = query.data?.pages.flat() ?? [];
+
+  if (query.isLoading) {
+    return (
+      <GlassCard>
+        <p className="text-sm text-muted-foreground">Loading your activity…</p>
+      </GlassCard>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <GlassCard>
+        <p className="text-sm text-muted-foreground">
+          Nothing here yet. Everything you do in Cube shows up in this log.
+        </p>
+      </GlassCard>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <GlassCard className="divide-y divide-border p-0">
+        {entries.map((a) => (
+          <div key={a.id} className="px-4 py-3">
+            <p className="text-sm">{a.description}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{stamp(a.created_at)}</p>
+          </div>
+        ))}
+      </GlassCard>
+      {query.hasNextPage && (
+        <Button
+          variant="secondary"
+          className="h-11 w-full rounded-2xl"
+          disabled={query.isFetchingNextPage}
+          onClick={() => query.fetchNextPage()}
+        >
+          {query.isFetchingNextPage ? "Loading…" : "Load older activity"}
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function stamp(iso: string) {
+  const d = new Date(iso);
+  return `${d.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })} · ${d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`;
+}
+
 
 function groupTotals(rows: api.Expense[], keyOf: (e: api.Expense) => string) {
   const map = new Map<string, api.Expense[]>();
