@@ -53,13 +53,32 @@ export function applyTheme(name: ThemeName) {
   meta.content = themeColorFor(name);
 }
 
-export function readStoredTheme(): ThemeName {
-  if (typeof localStorage === "undefined") return "founder";
-  const stored = localStorage.getItem(THEME_STORAGE_KEY);
-  return isThemeName(stored) ? stored : "founder";
+export const DEFAULT_THEME: ThemeName = "founder";
+
+/** Per-account cache key, so one account's theme never paints another's session. */
+function themeKey(userId: string) {
+  return `${THEME_STORAGE_KEY}:${userId}`;
 }
 
-export function storeTheme(name: ThemeName) {
+/** Cached theme for this account only; falls back to the default. */
+export function readStoredTheme(userId?: string): ThemeName {
+  if (typeof localStorage === "undefined" || !userId) return DEFAULT_THEME;
+  const stored = localStorage.getItem(themeKey(userId));
+  return isThemeName(stored) ? stored : DEFAULT_THEME;
+}
+
+export function storeTheme(name: ThemeName, userId?: string) {
+  if (typeof localStorage === "undefined" || !userId) return;
+  localStorage.setItem(themeKey(userId), name);
+}
+
+/** Drops every cached theme, including the legacy device-wide key. */
+export function clearStoredThemes() {
   if (typeof localStorage === "undefined") return;
-  localStorage.setItem(THEME_STORAGE_KEY, name);
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k === THEME_STORAGE_KEY || k?.startsWith(`${THEME_STORAGE_KEY}:`)) keys.push(k);
+  }
+  keys.forEach((k) => localStorage.removeItem(k));
 }

@@ -9,6 +9,7 @@ import { useProfile, useSignedUrl } from "@/hooks/use-cube";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
 import { useDailyReminder } from "@/lib/reminders";
+import { applyTheme, clearStoredThemes, DEFAULT_THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -42,6 +43,8 @@ function AppShellInner({ children }: { children: ReactNode }) {
   async function signOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
+    clearStoredThemes();
+    applyTheme(DEFAULT_THEME);
     await supabase.auth.signOut();
     navigate({ to: "/auth", replace: true });
   }
