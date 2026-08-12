@@ -16,8 +16,11 @@ function notify() {
 
 export function subscribeInstallState(listener: () => void) {
   listeners.add(listener);
-  return () => listeners.delete(listener);
+  return () => {
+    listeners.delete(listener);
+  };
 }
+
 
 export function captureInstallPrompt() {
   if (typeof window === "undefined") return;
