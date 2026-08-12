@@ -85,30 +85,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "Cube — Calculate your budget every day" },
+      { title: "Cube" },
       {
         name: "description",
         content:
-          "Set a monthly budget, log expenses by category, and track who you've lent to or borrowed from — all in one clean, distraction-free app.",
+          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
       { name: "theme-color", content: "#0a0507" },
       { property: "og:site_name", content: "Cube" },
-      { property: "og:title", content: "Cube — Calculate your budget every day" },
+      { property: "og:title", content: "Cube" },
       {
         property: "og:description",
         content:
-          "Set a monthly budget, log expenses by category, and track who you've lent to or borrowed from — all in one clean, distraction-free app.",
+          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cube — Calculate your budget every day" },
+      { name: "twitter:title", content: "Cube" },
       {
         name: "twitter:description",
         content:
-          "Set a monthly budget, log expenses by category, and track who you've lent to or borrowed from — all in one clean, distraction-free app.",
+          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
       },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/76828df5-8409-47a7-b191-6726e9621e1d" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/76828df5-8409-47a7-b191-6726e9621e1d" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/18ad2107-3ae5-4e05-b97d-a7a44d31e01b" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/18ad2107-3ae5-4e05-b97d-a7a44d31e01b" },
 
     ],
     links: [
