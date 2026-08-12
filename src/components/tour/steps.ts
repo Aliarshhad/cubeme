@@ -60,3 +60,8 @@ export const TOUR_STEPS: TourStep[] = [
 ];
 
 export const TOUR_FLAG_KEY = "cube-tour-done";
+
+/** Per-account backup flag, so one account finishing never suppresses another. */
+export function tourFlagKey(userId: string) {
+  return `${TOUR_FLAG_KEY}:${userId}`;
+}
