@@ -21,6 +21,27 @@ export function pushSupported() {
   );
 }
 
+/** Resolves once the registration has an active (running) worker. */
+async function waitForActive(registration: ServiceWorkerRegistration, timeoutMs = 10000) {
+  if (registration.active) return registration.active;
+  const worker = registration.installing ?? registration.waiting;
+  if (!worker) return null;
+  return new Promise<ServiceWorker | null>((resolve) => {
+    const done = (value: ServiceWorker | null) => {
+      worker.removeEventListener("statechange", onChange);
+      clearTimeout(timer);
+      resolve(value);
+    };
+    const onChange = () => {
+      if (worker.state === "activated") done(registration.active ?? worker);
+      if (worker.state === "redundant") done(null);
+    };
+    const timer = setTimeout(() => done(registration.active ?? null), timeoutMs);
+    worker.addEventListener("statechange", onChange);
+    onChange();
+  });
+}
+
 /**
  * Registers the dedicated notifications-only worker. Kept separate from the
  * offline app-shell worker (/sw.js), which is intentionally disabled in dev
@@ -32,7 +53,7 @@ async function pushRegistration() {
     const registration = await navigator.serviceWorker.register("/push/sw.js", {
       scope: "/push/",
     });
-    await navigator.serviceWorker.ready.catch(() => undefined);
+    await waitForActive(registration);
     return registration;
   } catch {
     return null;
@@ -45,13 +66,12 @@ export async function getPushRegistration() {
   return existing ?? null;
 }
 
-
 /**
  * Subscribes this device to push and stores the subscription so the scheduled
  * job can reach it even when the app is closed and the user is signed out.
  */
 export async function enablePushReminder(time: string) {
-  if (!pushSupported()) throw new Error("This browser does not support notifications");
+  if (!pushSupported()) throw new Error("This browser doesn't support notifications");
 
   let permission: NotificationPermission;
   try {
@@ -63,19 +83,45 @@ export async function enablePushReminder(time: string) {
     throw new Error(
       "Notifications are blocked for Cube. Allow them in your browser settings, then try again.",
     );
-  if (permission !== "granted") throw new Error("Allow notifications to get a daily reminder");
+  if (permission !== "granted")
+    throw new Error("Allow notifications to get your daily reminder");
 
   const registration = (await getPushRegistration()) ?? (await pushRegistration());
   if (!registration)
-    throw new Error("This browser wouldn't start the notification service — try reloading Cube");
+    throw new Error("Cube couldn't start the notification service — try reloading the app");
 
+  let active = await waitForActive(registration);
+  if (!active) {
+    /* Re-register once — a stale registration can be left without a worker. */
+    const fresh = await pushRegistration();
+    if (fresh) active = await waitForActive(fresh);
+    if (!active)
+      throw new Error("Cube couldn't start the notification service — try reloading the app");
+  }
 
-  const subscription =
-    (await registration.pushManager.getSubscription()) ??
-    (await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-    }));
+  const target = (await getPushRegistration()) ?? registration;
+
+  async function subscribe() {
+    return (
+      (await target.pushManager.getSubscription()) ??
+      (await target.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      }))
+    );
+  }
+
+  let subscription: PushSubscription;
+  try {
+    subscription = await subscribe();
+  } catch {
+    await new Promise((r) => setTimeout(r, 800));
+    try {
+      subscription = await subscribe();
+    } catch {
+      throw new Error("Cube couldn't turn on notifications on this device — try reloading the app");
+    }
+  }
 
   const json = subscription.toJSON() as { endpoint?: string; keys?: Record<string, string> };
   const { data } = await supabase.auth.getUser();
