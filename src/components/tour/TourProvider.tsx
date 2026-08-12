@@ -103,7 +103,8 @@ export function TourProvider({ children }: { children: ReactNode }) {
     setIndex(null);
     setRect(null);
     setClosing(true);
-    if (typeof localStorage !== "undefined") localStorage.setItem(TOUR_FLAG_KEY, "1");
+    if (typeof localStorage !== "undefined" && userId)
+      localStorage.setItem(tourFlagKey(userId), "1");
     void navigate({ to: "/dashboard" });
     try {
       await api.updateProfile({ tour_completed_at: new Date().toISOString() });
