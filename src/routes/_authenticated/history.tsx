@@ -1,8 +1,11 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { GlassCard } from "@/components/AppShell";
+import { Button } from "@/components/ui/button";
 import { useAllExpenses, useBudgets, useCategories, useCurrency } from "@/hooks/use-cube";
+import { ACTIVITY_PAGE_SIZE, fetchActivity } from "@/lib/activity";
 import * as api from "@/lib/api";
 import { dayLabel, formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
