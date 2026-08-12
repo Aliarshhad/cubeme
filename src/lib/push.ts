@@ -21,16 +21,30 @@ export function pushSupported() {
   );
 }
 
-async function readyRegistration() {
+/**
+ * Registers the dedicated notifications-only worker. Kept separate from the
+ * offline app-shell worker (/sw.js), which is intentionally disabled in dev
+ * and inside the Lovable preview.
+ */
+async function pushRegistration() {
   if (!("serviceWorker" in navigator)) return null;
-  const existing = await navigator.serviceWorker.getRegistration();
-  if (existing) return existing;
   try {
-    return await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    const registration = await navigator.serviceWorker.register("/push/sw.js", {
+      scope: "/push/",
+    });
+    await navigator.serviceWorker.ready.catch(() => undefined);
+    return registration;
   } catch {
     return null;
   }
 }
+
+export async function getPushRegistration() {
+  if (!("serviceWorker" in navigator)) return null;
+  const existing = await navigator.serviceWorker.getRegistration("/push/");
+  return existing ?? null;
+}
+
 
 /**
  * Subscribes this device to push and stores the subscription so the scheduled
@@ -39,12 +53,22 @@ async function readyRegistration() {
 export async function enablePushReminder(time: string) {
   if (!pushSupported()) throw new Error("This browser does not support notifications");
 
-  const permission = await Notification.requestPermission();
+  let permission: NotificationPermission;
+  try {
+    permission = await Notification.requestPermission();
+  } catch {
+    throw new Error("Your browser blocked the notification request");
+  }
+  if (permission === "denied")
+    throw new Error(
+      "Notifications are blocked for Cube. Allow them in your browser settings, then try again.",
+    );
   if (permission !== "granted") throw new Error("Allow notifications to get a daily reminder");
 
-  const registration = await readyRegistration();
+  const registration = (await getPushRegistration()) ?? (await pushRegistration());
   if (!registration)
-    throw new Error("Reminders need the installed app — open Cube from your home screen");
+    throw new Error("This browser wouldn't start the notification service — try reloading Cube");
+
 
   const subscription =
     (await registration.pushManager.getSubscription()) ??
@@ -75,7 +99,7 @@ export async function enablePushReminder(time: string) {
 
 export async function updatePushReminderTime(time: string) {
   if (!pushSupported()) return;
-  const registration = await navigator.serviceWorker.getRegistration();
+  const registration = await getPushRegistration();
   const subscription = await registration?.pushManager.getSubscription();
   if (!subscription) return;
   await supabase
@@ -86,7 +110,7 @@ export async function updatePushReminderTime(time: string) {
 
 export async function disablePushReminder() {
   if (!pushSupported()) return;
-  const registration = await navigator.serviceWorker.getRegistration();
+  const registration = await getPushRegistration();
   const subscription = await registration?.pushManager.getSubscription();
   if (!subscription) return;
   await supabase
@@ -94,3 +118,4 @@ export async function disablePushReminder() {
     .update({ enabled: false })
     .eq("endpoint", subscription.endpoint);
 }
+

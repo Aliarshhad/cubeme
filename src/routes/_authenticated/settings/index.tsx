@@ -15,7 +15,9 @@ import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
+import { InstallCubeRow } from "@/components/InstallCubeRow";
 import { useTour } from "@/components/tour/TourProvider";
+
 import {
   Accordion,
   AccordionContent,
@@ -107,7 +109,9 @@ function SettingsPage() {
 
   return (
     <div className="space-y-3">
+      <InstallCubeRow />
       <RowLink to="/profile" icon={User} title="Profile" description="Name, photo, email and password" />
+
 
       <Accordion type="single" collapsible className="space-y-3">
         <Section value="subscription" icon={Sparkles} title="Subscription">

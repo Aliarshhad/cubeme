@@ -1,4 +1,4 @@
-import logo from "@/assets/cube-logo.png.asset.json";
+import logo from "@/assets/cube-mark.png.asset.json";
 import { cn } from "@/lib/utils";
 
 export function CubeLogo({ className }: { className?: string }) {
@@ -6,7 +6,7 @@ export function CubeLogo({ className }: { className?: string }) {
     <img
       src={logo.url}
       alt="Cube logo"
-      className={cn("h-9 w-9 select-none drop-shadow-[0_0_18px_rgba(225,29,72,0.45)]", className)}
+      className={cn("h-9 w-auto select-none drop-shadow-[0_0_18px_rgba(225,29,72,0.45)]", className)}
     />
   );
 }
