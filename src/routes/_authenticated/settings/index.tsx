@@ -16,6 +16,7 @@ import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
 import { InstallCubeRow } from "@/components/InstallCubeRow";
+import { SyncStatusRow } from "@/components/SyncStatusRow";
 import { useTour } from "@/components/tour/TourProvider";
 
 import {
@@ -110,6 +111,7 @@ function SettingsPage() {
   return (
     <div className="space-y-3">
       <InstallCubeRow />
+      <SyncStatusRow />
       <RowLink to="/profile" icon={User} title="Profile" description="Name, photo, email and password" />
 
 
