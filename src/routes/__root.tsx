@@ -13,6 +13,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { captureInstallPrompt } from "@/lib/install";
 import { registerServiceWorker } from "@/lib/register-sw";
+import { startOfflineSync } from "@/lib/offline";
+import { toast } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -155,6 +157,17 @@ function RootComponent() {
     registerServiceWorker();
     return captureInstallPrompt();
   }, []);
+
+  useEffect(() =>
+    startOfflineSync((result) => {
+      if (result.pushed > 0) queryClient.invalidateQueries();
+      if (result.skipped.length > 0) {
+        toast.message("Some offline changes were not applied", {
+          description: `Newer changes were already saved elsewhere: ${result.skipped.slice(0, 3).join(", ")}`,
+        });
+      }
+    }),
+  [queryClient]);
 
 
   useEffect(() => {
