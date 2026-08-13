@@ -10,13 +10,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+          "Cube: Calculate your budget everyday.\nBudget your month, log expenses, and track who owes who — all in one app.",
       },
       { property: "og:title", content: "Cube" },
       {
         property: "og:description",
         content:
-          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+          "Cube: Calculate your budget everyday.\nBudget your month, log expenses, and track who owes who — all in one app.",
       },
     ],
   }),

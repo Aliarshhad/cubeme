@@ -89,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+          "Cube: Calculate your budget everyday.\nBudget your month, log expenses, and track who owes who — all in one app.",
       },
       { name: "theme-color", content: "#0a0507" },
       { property: "og:site_name", content: "Cube" },
@@ -97,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+          "Cube: Calculate your budget everyday.\nBudget your month, log expenses, and track who owes who — all in one app.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -105,10 +105,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Cube: Calculate your budget everyday.\nSet a monthly budget, log expenses by category, and track who you've lent to or borrowed from all in one clean.",
+          "Cube: Calculate your budget everyday.\nBudget your month, log expenses, and track who owes who — all in one app.",
       },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/18ad2107-3ae5-4e05-b97d-a7a44d31e01b" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/18ad2107-3ae5-4e05-b97d-a7a44d31e01b" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/2pCFQLe9JPMGwo42GuHMbtuELQt2/social-images/social-1786648596174-social-image.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/2pCFQLe9JPMGwo42GuHMbtuELQt2/social-images/social-1786648596174-social-image.webp" },
 
     ],
     links: [
