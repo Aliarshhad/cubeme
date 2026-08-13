@@ -424,8 +424,7 @@ export async function updateExpense(id: string, patch: Partial<ExpenseInput>) {
 }
 
 export async function deleteExpense(id: string) {
-  const { error } = await supabase.from("expenses").delete().eq("id", id);
-  if (error) throw error;
+  await writeDelete("expenses", id, { action: "expense", activity: "Deleted an expense" });
 }
 
 /* ---------------- receipts ---------------- */
@@ -636,12 +635,26 @@ export async function deleteRecurring(id: string) {
 }
 
 export async function fetchAppliedRecurringIds(month: string): Promise<string[]> {
-  const { data, error } = await supabase
-    .from("recurring_applied")
-    .select("recurring_id")
-    .eq("month", month);
-  if (error) throw error;
-  return (data ?? []).map((r) => r.recurring_id);
+  return readValue<string[]>(
+    `recurring-applied:${month}`,
+    async () => {
+      const { data, error } = await supabase
+        .from("recurring_applied")
+        .select("recurring_id")
+        .eq("month", month);
+      if (error) throw error;
+      return (data ?? []).map((r) => r.recurring_id);
+    },
+    (cached, ops) => {
+      const ids = new Set(cached ?? []);
+      for (const op of ops) {
+        if (op.table !== "recurring_applied") continue;
+        const payload = op.payload as { month?: string; recurring_id?: string };
+        if (payload.month === month && payload.recurring_id) ids.add(payload.recurring_id);
+      }
+      return [...ids];
+    },
+  );
 }
 
 /** Adds the given recurring items as real expenses for the month and logs them. */
