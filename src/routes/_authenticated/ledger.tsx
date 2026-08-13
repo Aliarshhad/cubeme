@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AmountField } from "@/components/AmountField";
 import { GlassCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { OFFLINE_READONLY_MESSAGE, useOfflineStatus } from "@/lib/offline";
 import {
   Dialog,
   DialogContent,
@@ -280,6 +281,7 @@ function DebtDialog({
 
   const repayable = direction === "lend" || direction === "borrow";
 
+  const offline = useOfflineStatus();
   const save = useMutation({
     mutationFn: async () => {
       if (!person.trim()) throw new Error("Who is it with?");
@@ -391,11 +393,14 @@ function DebtDialog({
 
           <p className="text-xs text-muted-foreground">{HINTS[direction]}</p>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex-col gap-2">
+          {offline.readOnly && (
+            <p className="w-full text-xs text-muted-foreground">{OFFLINE_READONLY_MESSAGE}</p>
+          )}
           <Button
             className="h-12 w-full text-base"
             onClick={() => save.mutate()}
-            disabled={save.isPending}
+            disabled={save.isPending || offline.readOnly}
           >
             Save record
           </Button>

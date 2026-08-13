@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AmountField } from "@/components/AmountField";
 import { ReceiptDetails } from "@/components/ReceiptDetails";
 import { Button } from "@/components/ui/button";
+import { OFFLINE_READONLY_MESSAGE, useOfflineStatus } from "@/lib/offline";
 import {
   Dialog,
   DialogContent,
@@ -77,6 +78,7 @@ export function ExpenseDialog({
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const offline = useOfflineStatus();
   const save = useMutation({
     mutationFn: async () => {
       const entered = Number(amount);
@@ -208,11 +210,14 @@ export function ExpenseDialog({
           {expense?.receipt_id && <ReceiptDetails receiptId={expense.receipt_id} />}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-col gap-2">
+          {offline.readOnly && (
+            <p className="w-full text-xs text-muted-foreground">{OFFLINE_READONLY_MESSAGE}</p>
+          )}
           <Button
             className="h-12 w-full text-base"
             onClick={() => save.mutate()}
-            disabled={save.isPending}
+            disabled={save.isPending || offline.readOnly}
           >
             {expense ? "Save changes" : "Add expense"}
           </Button>

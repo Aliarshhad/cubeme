@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { AmountField } from "@/components/AmountField";
 import { Button } from "@/components/ui/button";
+import { OFFLINE_NEEDS_NET, useOfflineStatus } from "@/lib/offline";
 import {
   Dialog,
   DialogContent,
@@ -80,6 +81,7 @@ export function ReceiptScanner({
     setScanned(false);
   }
 
+  const offline = useOfflineStatus();
   const scan = useMutation({
     mutationFn: async (picked: File) => {
       const dataUrl = await toDataUrl(picked);
@@ -214,7 +216,7 @@ export function ReceiptScanner({
               <Button
                 className="h-14 rounded-2xl"
                 onClick={() => cameraRef.current?.click()}
-                disabled={scan.isPending}
+                disabled={scan.isPending || !offline.online}
               >
                 <Camera className="mr-1 h-5 w-5" /> Camera
               </Button>
@@ -222,11 +224,16 @@ export function ReceiptScanner({
                 variant="secondary"
                 className="h-14 rounded-2xl"
                 onClick={() => galleryRef.current?.click()}
-                disabled={scan.isPending}
+                disabled={scan.isPending || !offline.online}
               >
                 <ImagePlus className="mr-1 h-5 w-5" /> Gallery
               </Button>
             </div>
+            {!offline.online && (
+              <p className="text-sm text-muted-foreground">
+                {OFFLINE_NEEDS_NET} — receipt scanning reads the photo online.
+              </p>
+            )}
             {scan.isPending && (
               <p className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" /> Reading the receipt…
