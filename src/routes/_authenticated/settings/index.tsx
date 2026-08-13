@@ -40,6 +40,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { logActivity } from "@/lib/activity";
 import * as api from "@/lib/api";
 import { CURRENCIES } from "@/lib/format";
+import { OFFLINE_NEEDS_NET, useOfflineStatus } from "@/lib/offline";
 import { disablePushReminder, enablePushReminder, updatePushReminderTime } from "@/lib/push";
 import { THEMES } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,7 @@ function SettingsPage() {
   const queryClient = useQueryClient();
   const { theme, setTheme } = useTheme();
   const { startTour } = useTour();
+  const offline = useOfflineStatus();
 
   const currency = profile.data?.currency ?? "PKR";
   const reminderEnabled = profile.data?.reminder_enabled ?? false;
@@ -168,9 +170,15 @@ function SettingsPage() {
               <p className="text-xs text-muted-foreground">
                 A gentle daily nudge, delivered even when Cube is closed.
               </p>
+              {!offline.online && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {OFFLINE_NEEDS_NET} to change reminders.
+                </p>
+              )}
             </div>
             <Switch
               checked={reminderEnabled}
+              disabled={!offline.online}
               onCheckedChange={(v) => saveReminder.mutate({ reminder_enabled: v })}
             />
           </div>

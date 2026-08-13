@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { useOfflineStatus } from "@/lib/offline";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -101,6 +102,7 @@ function CurrencyPage() {
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-lg uppercase tracking-[0.14em]">Currency &amp; rates</h1>
           <Button
+            disabled={!offline.online}
             size="sm"
             variant="secondary"
             onClick={() => refreshRates.mutate()}
