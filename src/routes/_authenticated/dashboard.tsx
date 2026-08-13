@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Repeat, TrendingDown, TrendingUp, Pencil, BellRing, ScanLine } from "lucide-react";
+import { Plus, Repeat, TrendingDown, TrendingUp, Pencil, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 
 import { AmountDisplay } from "@/components/AmountDisplay";
@@ -92,9 +92,6 @@ function Dashboard() {
   const { lent, borrowed, received, sent } = debtTotals(debts.data ?? []);
   const remaining = budgetAmount - spent - lent - sent + borrowed + received;
 
-  const today = new Date().toLocaleDateString("en-CA");
-  const loggedToday = (expenses.data ?? []).some((e) => e.spent_on === today);
-
   const byCategory = (categories.data ?? [])
     .map((c) => ({
       ...c,
@@ -162,19 +159,6 @@ function Dashboard() {
 
         </div>
       </GlassCard>
-
-      {!loggedToday && (
-        <GlassCard className="flex items-start gap-3">
-          <BellRing className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <div>
-            <p className="font-display text-lg tracking-tight">Nothing logged today</p>
-            <p className="text-sm text-muted-foreground">
-              Add today's spending while it's fresh — a daily minute keeps the month honest. Turn on
-              a daily reminder in Settings.
-            </p>
-          </div>
-        </GlassCard>
-      )}
 
       <div className="flex gap-2">
         <Button
@@ -245,6 +229,23 @@ function Dashboard() {
           </ul>
         )}
       </GlassCard>
+
+      <section className="space-y-3">
+        <div className="px-1">
+          <h2 className="text-lg uppercase tracking-[0.14em]">More to love</h2>
+          <p className="text-sm text-muted-foreground">A peek at what&apos;s coming to Cube next.</p>
+        </div>
+        <GlassCard className="relative">
+          <span className="absolute right-4 top-4 rounded-full border border-border px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+            Coming soon
+          </span>
+          <p className="pr-24 font-display text-xl tracking-tight">Bill Split</p>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Split a group expense evenly and add everyone&apos;s share straight to your ledger — no
+            manual math.
+          </p>
+        </GlassCard>
+      </section>
 
       <ExpenseDialog open={addOpen} onOpenChange={setAddOpen} />
       <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
