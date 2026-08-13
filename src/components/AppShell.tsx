@@ -8,6 +8,7 @@ import { TourProvider } from "@/components/tour/TourProvider";
 import { useProfile, useSignedUrl } from "@/hooks/use-cube";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
+import { clearOfflineData } from "@/lib/offline";
 import { useDailyReminder } from "@/lib/reminders";
 import { applyTheme, clearStoredThemes, DEFAULT_THEME } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,7 @@ function AppShellInner({ children }: { children: ReactNode }) {
     await queryClient.cancelQueries();
     queryClient.clear();
     clearStoredThemes();
+    await clearOfflineData();
     applyTheme(DEFAULT_THEME);
     await supabase.auth.signOut();
     navigate({ to: "/auth", replace: true });

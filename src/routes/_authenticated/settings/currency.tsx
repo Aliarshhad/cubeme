@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
+import { useOfflineStatus } from "@/lib/offline";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -47,6 +48,7 @@ function CurrencyPage() {
   const base = profile.data?.currency ?? "PKR";
   const rates = useFxRates(base);
   const refresh = useServerFn(getLiveRates);
+  const offline = useOfflineStatus();
 
   const saveCurrency = useMutation({
     mutationFn: (value: string) => api.updateProfile({ currency: value }),
@@ -104,7 +106,7 @@ function CurrencyPage() {
             size="sm"
             variant="secondary"
             onClick={() => refreshRates.mutate()}
-            disabled={refreshRates.isPending}
+            disabled={refreshRates.isPending || !offline.online}
           >
             <RefreshCw className="mr-1 h-3.5 w-3.5" /> Refresh
           </Button>

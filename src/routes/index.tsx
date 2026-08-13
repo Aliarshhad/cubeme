@@ -32,7 +32,7 @@ const features = [
   {
     icon: PieChart,
     title: "Your categories",
-    body: "Travelling, Food, Strike, Home, Extra — rename them or add your own.",
+    body: "Travelling, Food, Bills, Home, Extra — rename them or add your own.",
   },
   {
     icon: HandCoins,
@@ -49,21 +49,24 @@ const features = [
 function Landing() {
   return (
     <div className="glow-field min-h-screen">
-      <main className="mx-auto flex max-w-3xl flex-col items-center px-5 py-16 text-center">
+      <main className="mx-auto flex max-w-3xl flex-col items-center px-5 py-12 text-center sm:py-16">
         <CubeWordmark className="scale-125" />
 
-        <h1 className="mt-10 font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-glow sm:text-7xl">
+        <p className="mt-10 text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
           Money loves water
+        </p>
+        <h1 className="mt-3 max-w-2xl font-display text-[clamp(1.75rem,7vw,3.75rem)] font-extrabold leading-[1.05] tracking-tight text-glow">
+          You lent your friend 5,000 in March. Cube remembers.
         </h1>
-        <p className="mt-5 max-w-lg text-base text-muted-foreground">
-          Money needs to move and flow to grow rather than stay still. When you circulates, it
-          multiplies.
+        <p className="mt-4 max-w-lg text-sm text-muted-foreground sm:text-base">
+          So you don&apos;t have to bring it up twice. Set a budget, log expenses, and track
+          everything you&apos;ve lent and borrowed — all in one place.
         </p>
         <p className="mt-3 max-w-lg text-sm text-muted-foreground">
           Cube is free while we build it. No card, no trial clock, no catch.
         </p>
 
-        <span className="glass-soft mt-8 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium tracking-tight text-foreground/80">
+        <span className="glass-soft mt-6 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium tracking-tight text-foreground/80">
           Free during early access
         </span>
 

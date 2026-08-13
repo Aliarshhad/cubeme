@@ -13,6 +13,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { captureInstallPrompt } from "@/lib/install";
 import { registerServiceWorker } from "@/lib/register-sw";
+import { startOfflineSync } from "@/lib/offline";
+import { toast } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -107,9 +109,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Cube: Calculate your budget everyday.\nBudget your month, log expenses, and track who owes who — all in one app.",
       },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/2pCFQLe9JPMGwo42GuHMbtuELQt2/social-images/social-1786648596174-social-image.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/2pCFQLe9JPMGwo42GuHMbtuELQt2/social-images/social-1786648596174-social-image.webp" },
-
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/2pCFQLe9JPMGwo42GuHMbtuELQt2/social-images/social-1786648596174-social-image.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/2pCFQLe9JPMGwo42GuHMbtuELQt2/social-images/social-1786648596174-social-image.webp",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -123,9 +132,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
-
     ],
-
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -156,6 +163,18 @@ function RootComponent() {
     return captureInstallPrompt();
   }, []);
 
+  useEffect(
+    () =>
+      startOfflineSync((result) => {
+        if (result.pushed > 0) queryClient.invalidateQueries();
+        if (result.skipped.length > 0) {
+          toast.message("Some offline changes were not applied", {
+            description: `Newer changes were already saved elsewhere: ${result.skipped.slice(0, 3).join(", ")}`,
+          });
+        }
+      }),
+    [queryClient],
+  );
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
