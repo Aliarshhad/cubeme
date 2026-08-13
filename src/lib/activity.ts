@@ -36,7 +36,11 @@ export async function fetchActivity(page = 0): Promise<ActivityEntry[]> {
     return (data ?? []) as ActivityEntry[];
   };
 
-  const rows = await readValue<ActivityEntry[]>(`activity:${page}`, fetcher, (cached) => cached ?? []);
+  const rows = await readValue<ActivityEntry[]>(
+    `activity:${page}`,
+    fetcher,
+    (cached) => cached ?? [],
+  );
   if (page > 0) return rows;
 
   // Entries still waiting to sync belong at the top of the feed.

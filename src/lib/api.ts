@@ -253,19 +253,17 @@ export async function upsertFxRate(input: {
   fetched_at?: string | null;
 }) {
   const user_id = await uid();
-  const { error } = await supabase
-    .from("fx_rates")
-    .upsert(
-      {
-        user_id,
-        base: input.base,
-        code: input.code,
-        rate: input.rate,
-        manual: input.manual,
-        fetched_at: input.fetched_at ?? new Date().toISOString(),
-      },
-      { onConflict: "user_id,base,code" },
-    );
+  const { error } = await supabase.from("fx_rates").upsert(
+    {
+      user_id,
+      base: input.base,
+      code: input.code,
+      rate: input.rate,
+      manual: input.manual,
+      fetched_at: input.fetched_at ?? new Date().toISOString(),
+    },
+    { onConflict: "user_id,base,code" },
+  );
   if (error) throw error;
 }
 
@@ -353,9 +351,9 @@ const EXPENSE_COLS =
 const mapExpense = (e: Record<string, unknown>): Expense =>
   ({
     ...e,
-    amount: Number(e['amount']),
-    original_amount: e['original_amount'] == null ? null : Number(e['original_amount']),
-    fx_rate: Number(e['fx_rate'] ?? 1),
+    amount: Number(e["amount"]),
+    original_amount: e["original_amount"] == null ? null : Number(e["original_amount"]),
+    fx_rate: Number(e["fx_rate"] ?? 1),
   }) as Expense;
 
 export async function fetchExpenses(month: string): Promise<Expense[]> {
@@ -407,19 +405,21 @@ export type ExpenseInput = {
 };
 
 export async function createExpense(input: ExpenseInput) {
-  return writeInsert("expenses", { fx_rate: 1, ...input }, {
-    action: "expense",
-    activity: `Added an expense of ${money(input.amount)}${input.note ? ` \u2014 ${input.note}` : ""}`,
-  });
+  return writeInsert(
+    "expenses",
+    { fx_rate: 1, ...input },
+    {
+      action: "expense",
+      activity: `Added an expense of ${money(input.amount)}${input.note ? ` \u2014 ${input.note}` : ""}`,
+    },
+  );
 }
 
 export async function updateExpense(id: string, patch: Partial<ExpenseInput>) {
   await writeUpdate("expenses", id, patch, {
     action: "expense",
     activity:
-      patch.amount != null
-        ? `Edited an expense to ${money(patch.amount)}`
-        : "Edited an expense",
+      patch.amount != null ? `Edited an expense to ${money(patch.amount)}` : "Edited an expense",
   });
 }
 
@@ -464,7 +464,9 @@ export async function fetchReceipt(id: string): Promise<Receipt | null> {
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
-  return data ? ({ ...data, total: data.total == null ? null : Number(data.total) } as Receipt) : null;
+  return data
+    ? ({ ...data, total: data.total == null ? null : Number(data.total) } as Receipt)
+    : null;
 }
 
 export type ReceiptItemInput = {
@@ -555,10 +557,14 @@ const debtLabel = (input: Pick<DebtInput, "direction" | "person" | "amount">) =>
 };
 
 export async function createDebt(input: DebtInput) {
-  await writeInsert("debts", { fx_rate: 1, ...input }, {
-    action: "ledger",
-    activity: debtLabel(input),
-  });
+  await writeInsert(
+    "debts",
+    { fx_rate: 1, ...input },
+    {
+      action: "ledger",
+      activity: debtLabel(input),
+    },
+  );
 }
 
 export async function updateDebt(id: string, patch: Partial<DebtInput>) {

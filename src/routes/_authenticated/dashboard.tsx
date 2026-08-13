@@ -156,7 +156,6 @@ function Dashboard() {
           <Stat label="Spent" value={spent} currency={currency} />
           <Stat label="Lent out" value={lent} currency={currency} tone="down" />
           <Stat label="Borrowed" value={borrowed} currency={currency} tone="up" />
-
         </div>
       </GlassCard>
 
@@ -177,8 +176,6 @@ function Dashboard() {
           <ScanLine className="mr-1 h-5 w-5" /> Scan
         </Button>
       </div>
-
-
 
       {pending.length > 0 && (
         <GlassCard className="flex items-center justify-between gap-3">
@@ -233,7 +230,9 @@ function Dashboard() {
       <section className="space-y-3">
         <div className="px-1">
           <h2 className="text-lg uppercase tracking-[0.14em]">More to love</h2>
-          <p className="text-sm text-muted-foreground">A peek at what&apos;s coming to Cube next.</p>
+          <p className="text-sm text-muted-foreground">
+            A peek at what&apos;s coming to Cube next.
+          </p>
         </div>
         <GlassCard className="relative">
           <span className="absolute right-4 top-4 rounded-full border border-border px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -271,13 +270,7 @@ function Stat({
         {tone === "down" && <TrendingDown className="h-3 w-3" />}
         {label}
       </p>
-      <AmountDisplay
-        value={value}
-        currency={currency}
-        size="stat"
-        className="mt-1 font-semibold"
-      />
+      <AmountDisplay value={value} currency={currency} size="stat" className="mt-1 font-semibold" />
     </div>
-
   );
 }

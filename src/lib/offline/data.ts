@@ -17,11 +17,7 @@ async function key(k: string) {
   return `${uid ?? "anon"}:${k}`;
 }
 
-function overlay<T extends { id: string }>(
-  rows: T[],
-  ops: QueuedMutation[],
-  table: string,
-): T[] {
+function overlay<T extends { id: string }>(rows: T[], ops: QueuedMutation[], table: string): T[] {
   let out = [...rows];
   for (const op of ops) {
     if (op.table !== table) continue;
@@ -145,7 +141,9 @@ function guard() {
   if (isReadOnly()) throw new Error(OFFLINE_READONLY_MESSAGE);
 }
 
-async function queueWrite(m: Omit<QueuedMutation, "created_at" | "clientId"> & { clientId?: string }) {
+async function queueWrite(
+  m: Omit<QueuedMutation, "created_at" | "clientId"> & { clientId?: string },
+) {
   await queueAdd({
     clientId: m.clientId ?? newId(),
     created_at: new Date().toISOString(),
@@ -228,7 +226,13 @@ export async function writeUpsert(
     const { error } = await table_(table).upsert(full, { onConflict });
     if (error) throw new Error(error.message);
   } else {
-    await queueWrite({ table, op: "upsert", payload: full, onConflict, label: meta.activity ?? "" });
+    await queueWrite({
+      table,
+      op: "upsert",
+      payload: full,
+      onConflict,
+      label: meta.activity ?? "",
+    });
   }
   if (meta.activity) await logActivityRow(meta.activity, meta.action ?? table);
 }

@@ -23,8 +23,7 @@ export type OfflineState = {
 };
 
 function derive(s: Omit<OfflineState, "status" | "readOnly">): OfflineState {
-  const expired =
-    !s.online && (!s.offlineUntil || new Date(s.offlineUntil).getTime() < Date.now());
+  const expired = !s.online && (!s.offlineUntil || new Date(s.offlineUntil).getTime() < Date.now());
   const status: SyncStatus = s.online
     ? s.syncing || s.pending > 0
       ? "syncing"

@@ -51,7 +51,9 @@ export function SyncStatusRow() {
         <p className="mt-0.5 text-sm text-muted-foreground">{copy.note}</p>
         <p className="mt-1 text-xs text-muted-foreground">
           {lastSynced(state.lastSyncAt)}
-          {state.pending > 0 ? ` · ${state.pending} change${state.pending > 1 ? "s" : ""} waiting` : ""}
+          {state.pending > 0
+            ? ` · ${state.pending} change${state.pending > 1 ? "s" : ""} waiting`
+            : ""}
         </p>
       </div>
     </GlassCard>

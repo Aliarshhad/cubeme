@@ -17,7 +17,10 @@ type LooseTable = {
   delete: () => { eq: (col: string, val: string) => Promise<WriteResult> };
   upsert: (row: unknown, opts: { onConflict: string }) => Promise<WriteResult>;
   select: (cols: string) => {
-    eq: (col: string, val: string) => {
+    eq: (
+      col: string,
+      val: string,
+    ) => {
       maybeSingle: () => Promise<{ data: { updated_at?: string } | null }>;
     };
   };
