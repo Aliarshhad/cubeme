@@ -127,6 +127,18 @@ async function logActivityRow(label: string, action: string) {
   void refreshPending();
 }
 
+type WriteResult = { error: { message: string } | null };
+type LooseTable = {
+  insert: (row: unknown) => Promise<WriteResult>;
+  update: (patch: unknown) => { eq: (col: string, val: string) => Promise<WriteResult> };
+  delete: () => { eq: (col: string, val: string) => Promise<WriteResult> };
+  upsert: (row: unknown, opts: { onConflict: string }) => Promise<WriteResult>;
+};
+
+/** Table names are dynamic here, so we use a loosely typed view of the client. */
+const table_ = (name: string): LooseTable =>
+  (supabase as unknown as { from: (n: string) => LooseTable }).from(name);
+
 type WriteMeta = { activity?: string; action?: string };
 
 function guard() {
@@ -153,8 +165,8 @@ export async function writeInsert(
   if (!user_id) throw new Error("Not signed in");
   const full = { id: newId(), user_id, ...row };
   if (isOnline()) {
-    const { error } = await supabase.from(table).insert(full as never);
-    if (error) throw error;
+    const { error } = await table_(table).insert(full);
+    if (error) throw new Error(error.message);
   } else {
     await queueWrite({
       clientId: full.id as string,
@@ -176,8 +188,8 @@ export async function writeUpdate(
 ) {
   guard();
   if (isOnline()) {
-    const { error } = await supabase.from(table).update(patch as never).eq("id", id);
-    if (error) throw error;
+    const { error } = await table_(table).update(patch).eq("id", id);
+    if (error) throw new Error(error.message);
   } else {
     await queueWrite({
       table,
@@ -194,8 +206,8 @@ export async function writeUpdate(
 export async function writeDelete(table: string, id: string, meta: WriteMeta = {}) {
   guard();
   if (isOnline()) {
-    const { error } = await supabase.from(table).delete().eq("id", id);
-    if (error) throw error;
+    const { error } = await table_(table).delete().eq("id", id);
+    if (error) throw new Error(error.message);
   } else {
     await queueWrite({ table, op: "delete", rowId: id, payload: {}, label: meta.activity ?? "" });
   }
@@ -213,8 +225,8 @@ export async function writeUpsert(
   if (!user_id) throw new Error("Not signed in");
   const full = { user_id, ...row };
   if (isOnline()) {
-    const { error } = await supabase.from(table).upsert(full as never, { onConflict });
-    if (error) throw error;
+    const { error } = await table_(table).upsert(full, { onConflict });
+    if (error) throw new Error(error.message);
   } else {
     await queueWrite({ table, op: "upsert", payload: full, onConflict, label: meta.activity ?? "" });
   }
