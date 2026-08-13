@@ -48,6 +48,7 @@ function CurrencyPage() {
   const base = profile.data?.currency ?? "PKR";
   const rates = useFxRates(base);
   const refresh = useServerFn(getLiveRates);
+  const offline = useOfflineStatus();
 
   const saveCurrency = useMutation({
     mutationFn: (value: string) => api.updateProfile({ currency: value }),
