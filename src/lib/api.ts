@@ -1,4 +1,15 @@
 import { supabase } from "@/integrations/supabase/client";
+import {
+  currentUserId,
+  readRows,
+  readValue,
+  writeDelete,
+  writeInsert,
+  writeUpdate,
+  writeUpsert,
+} from "@/lib/offline";
+
+const money = (n: number) => n.toLocaleString();
 
 export type Category = {
   id: string;
@@ -111,9 +122,9 @@ const monthRange = (key: string) => {
 };
 
 async function uid() {
-  const { data } = await supabase.auth.getUser();
-  if (!data.user) throw new Error("Not signed in");
-  return data.user.id;
+  const id = await currentUserId();
+  if (!id) throw new Error("Not signed in");
+  return id;
 }
 
 /* ---------------- profile ---------------- */
@@ -122,9 +133,27 @@ export async function fetchProfile(): Promise<Profile> {
   const id = await uid();
   const cols =
     "id, display_name, currency, avatar_url, theme, reminder_enabled, reminder_time, tour_completed_at";
-  const { data, error } = await supabase.from("profiles").select(cols).eq("id", id).maybeSingle();
-  if (error) throw error;
-  if (data) return data as Profile;
+  const cached = await readValue<Profile | null>(
+    "profile",
+    async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(cols)
+        .eq("id", id)
+        .maybeSingle();
+      if (error) throw error;
+      return (data ?? null) as Profile | null;
+    },
+    (value, ops) => {
+      let next = value;
+      for (const op of ops) {
+        if (op.table === "profiles" && op.op === "update" && next)
+          next = { ...next, ...(op.payload as Partial<Profile>) };
+      }
+      return next;
+    },
+  );
+  if (cached) return cached;
   const inserted = await supabase.from("profiles").insert({ id }).select(cols).single();
   if (inserted.error) throw inserted.error;
   return inserted.data as Profile;
@@ -140,8 +169,7 @@ export async function updateProfile(patch: {
   tour_completed_at?: string | null;
 }) {
   const id = await uid();
-  const { error } = await supabase.from("profiles").update(patch).eq("id", id);
-  if (error) throw error;
+  await writeUpdate("profiles", id, patch);
 }
 
 export async function updateEmail(email: string) {
@@ -178,6 +206,12 @@ export async function signedUrl(bucket: string, path: string, seconds = 3600) {
 /* ---------------- categories ---------------- */
 
 export async function fetchCategories(): Promise<Category[]> {
+  return readRows<Category>("categories", "categories", fetchCategoriesNet, {
+    sort: (a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name),
+  });
+}
+
+async function fetchCategoriesNet(): Promise<Category[]> {
   const { data, error } = await supabase
     .from("categories")
     .select("id, name, color, sort_order")
@@ -188,21 +222,15 @@ export async function fetchCategories(): Promise<Category[]> {
 }
 
 export async function createCategory(input: { name: string; color: string }) {
-  const user_id = await uid();
-  const { error } = await supabase
-    .from("categories")
-    .insert({ ...input, user_id, sort_order: 99 });
-  if (error) throw error;
+  await writeInsert("categories", { ...input, sort_order: 99 });
 }
 
 export async function updateCategory(id: string, patch: { name?: string; color?: string }) {
-  const { error } = await supabase.from("categories").update(patch).eq("id", id);
-  if (error) throw error;
+  await writeUpdate("categories", id, patch);
 }
 
 export async function deleteCategory(id: string) {
-  const { error } = await supabase.from("categories").delete().eq("id", id);
-  if (error) throw error;
+  await writeDelete("categories", id);
 }
 
 /* ---------------- fx rates ---------------- */
@@ -260,30 +288,61 @@ export async function saveAutoRates(base: string, rates: Record<string, number>)
 /* ---------------- budget ---------------- */
 
 export async function fetchBudget(month: string): Promise<number> {
-  const { data, error } = await supabase
-    .from("monthly_budgets")
-    .select("amount")
-    .eq("month", month)
-    .maybeSingle();
-  if (error) throw error;
-  return data ? Number(data.amount) : 0;
+  return readValue<number>(
+    `budget:${month}`,
+    async () => {
+      const { data, error } = await supabase
+        .from("monthly_budgets")
+        .select("amount")
+        .eq("month", month)
+        .maybeSingle();
+      if (error) throw error;
+      return data ? Number(data.amount) : 0;
+    },
+    (cached, ops) => {
+      let value = cached ?? 0;
+      for (const op of ops) {
+        if (op.table !== "monthly_budgets") continue;
+        const payload = op.payload as { month?: string; amount?: number };
+        if (payload.month === month && payload.amount != null) value = Number(payload.amount);
+      }
+      return value;
+    },
+  );
 }
 
 export async function setBudget(month: string, amount: number) {
-  const user_id = await uid();
-  const { error } = await supabase
-    .from("monthly_budgets")
-    .upsert({ user_id, month, amount }, { onConflict: "user_id,month" });
-  if (error) throw error;
+  await writeUpsert("monthly_budgets", { month, amount }, "user_id,month", {
+    action: "budget",
+    activity: `Set the ${monthLabel(month)} budget to ${money(amount)}`,
+  });
 }
 
 export async function fetchBudgets(): Promise<{ month: string; amount: number }[]> {
-  const { data, error } = await supabase
-    .from("monthly_budgets")
-    .select("month, amount")
-    .order("month", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map((b) => ({ month: b.month, amount: Number(b.amount) }));
+  return readValue<{ month: string; amount: number }[]>(
+    "budgets",
+    async () => {
+      const { data, error } = await supabase
+        .from("monthly_budgets")
+        .select("month, amount")
+        .order("month", { ascending: false });
+      if (error) throw error;
+      return (data ?? []).map((b) => ({ month: b.month, amount: Number(b.amount) }));
+    },
+    (cached, ops) => {
+      const rows = [...(cached ?? [])];
+      for (const op of ops) {
+        if (op.table !== "monthly_budgets") continue;
+        const payload = op.payload as { month?: string; amount?: number };
+        if (!payload.month || payload.amount == null) continue;
+        const existing = rows.findIndex((r) => r.month === payload.month);
+        const row = { month: payload.month, amount: Number(payload.amount) };
+        if (existing >= 0) rows[existing] = row;
+        else rows.push(row);
+      }
+      return rows.sort((a, b) => (a.month < b.month ? 1 : -1));
+    },
+  );
 }
 
 /* ---------------- expenses ---------------- */
@@ -301,6 +360,14 @@ const mapExpense = (e: Record<string, unknown>): Expense =>
 
 export async function fetchExpenses(month: string): Promise<Expense[]> {
   const { start, end } = monthRange(month);
+  return readRows<Expense>(`expenses:${month}`, "expenses", () => fetchExpensesNet(month), {
+    filter: (e) => e.spent_on >= start && e.spent_on < end,
+    sort: (a, b) => (a.spent_on < b.spent_on ? 1 : -1),
+  });
+}
+
+async function fetchExpensesNet(month: string): Promise<Expense[]> {
+  const { start, end } = monthRange(month);
   const { data, error } = await supabase
     .from("expenses")
     .select(EXPENSE_COLS)
@@ -313,6 +380,12 @@ export async function fetchExpenses(month: string): Promise<Expense[]> {
 }
 
 export async function fetchAllExpenses(): Promise<Expense[]> {
+  return readRows<Expense>("expenses:all", "expenses", fetchAllExpensesNet, {
+    sort: (a, b) => (a.spent_on < b.spent_on ? 1 : -1),
+  });
+}
+
+async function fetchAllExpensesNet(): Promise<Expense[]> {
   const { data, error } = await supabase
     .from("expenses")
     .select(EXPENSE_COLS)
@@ -334,19 +407,20 @@ export type ExpenseInput = {
 };
 
 export async function createExpense(input: ExpenseInput) {
-  const user_id = await uid();
-  const { data, error } = await supabase
-    .from("expenses")
-    .insert({ ...input, user_id })
-    .select("id")
-    .single();
-  if (error) throw error;
-  return data.id as string;
+  return writeInsert("expenses", { fx_rate: 1, ...input }, {
+    action: "expense",
+    activity: `Added an expense of ${money(input.amount)}${input.note ? ` \u2014 ${input.note}` : ""}`,
+  });
 }
 
 export async function updateExpense(id: string, patch: Partial<ExpenseInput>) {
-  const { error } = await supabase.from("expenses").update(patch).eq("id", id);
-  if (error) throw error;
+  await writeUpdate("expenses", id, patch, {
+    action: "expense",
+    activity:
+      patch.amount != null
+        ? `Edited an expense to ${money(patch.amount)}`
+        : "Edited an expense",
+  });
 }
 
 export async function deleteExpense(id: string) {
@@ -440,6 +514,12 @@ const DEBT_COLS =
   "id, direction, person, amount, occurred_on, note, purpose, settled_at, expected_return_on, returned_on, currency, original_amount, fx_rate";
 
 export async function fetchDebts(): Promise<Debt[]> {
+  return readRows<Debt>("debts", "debts", fetchDebtsNet, {
+    sort: (a, b) => (a.occurred_on < b.occurred_on ? 1 : -1),
+  });
+}
+
+async function fetchDebtsNet(): Promise<Debt[]> {
   const { data, error } = await supabase
     .from("debts")
     .select(DEBT_COLS)
@@ -467,37 +547,57 @@ export type DebtInput = {
   fx_rate?: number;
 };
 
+const debtLabel = (input: Pick<DebtInput, "direction" | "person" | "amount">) => {
+  const amount = money(input.amount);
+  if (input.direction === "lend") return `Lent ${amount} to ${input.person}`;
+  if (input.direction === "borrow") return `Borrowed ${amount} from ${input.person}`;
+  if (input.direction === "received") return `Received ${amount} from ${input.person}`;
+  return `Sent ${amount} to ${input.person}`;
+};
+
 export async function createDebt(input: DebtInput) {
-  const user_id = await uid();
-  const { error } = await supabase.from("debts").insert({ ...input, user_id });
-  if (error) throw error;
+  await writeInsert("debts", { fx_rate: 1, ...input }, {
+    action: "ledger",
+    activity: debtLabel(input),
+  });
 }
 
 export async function updateDebt(id: string, patch: Partial<DebtInput>) {
-  const { error } = await supabase.from("debts").update(patch).eq("id", id);
-  if (error) throw error;
+  await writeUpdate("debts", id, patch, {
+    action: "ledger",
+    activity: `Edited a ledger entry${patch.person ? ` with ${patch.person}` : ""}`,
+  });
 }
 
 export async function setDebtSettled(id: string, settled: boolean) {
   const now = new Date();
-  const { error } = await supabase
-    .from("debts")
-    .update({
+  await writeUpdate(
+    "debts",
+    id,
+    {
       settled_at: settled ? now.toISOString() : null,
       returned_on: settled ? now.toLocaleDateString("en-CA") : null,
-    })
-    .eq("id", id);
-  if (error) throw error;
+    },
+    {
+      action: "ledger",
+      activity: settled ? "Marked a ledger entry settled" : "Reopened a settled ledger entry",
+    },
+  );
 }
 
 export async function deleteDebt(id: string) {
-  const { error } = await supabase.from("debts").delete().eq("id", id);
-  if (error) throw error;
+  await writeDelete("debts", id, { action: "ledger", activity: "Deleted a ledger entry" });
 }
 
 /* ---------------- recurring ---------------- */
 
 export async function fetchRecurring(): Promise<Recurring[]> {
+  return readRows<Recurring>("recurring", "recurring_expenses", fetchRecurringNet, {
+    sort: (a, b) => a.day_of_month - b.day_of_month,
+  });
+}
+
+async function fetchRecurringNet(): Promise<Recurring[]> {
   const { data, error } = await supabase
     .from("recurring_expenses")
     .select("id, label, amount, category_id, day_of_month, active")
@@ -515,19 +615,24 @@ export type RecurringInput = {
 };
 
 export async function createRecurring(input: RecurringInput) {
-  const user_id = await uid();
-  const { error } = await supabase.from("recurring_expenses").insert({ ...input, user_id });
-  if (error) throw error;
+  await writeInsert("recurring_expenses", input, {
+    action: "recurring",
+    activity: `Added the recurring expense \u201c${input.label}\u201d (${money(input.amount)})`,
+  });
 }
 
 export async function updateRecurring(id: string, patch: Partial<RecurringInput>) {
-  const { error } = await supabase.from("recurring_expenses").update(patch).eq("id", id);
-  if (error) throw error;
+  await writeUpdate("recurring_expenses", id, patch, {
+    action: "recurring",
+    activity: "Edited a recurring expense",
+  });
 }
 
 export async function deleteRecurring(id: string) {
-  const { error } = await supabase.from("recurring_expenses").delete().eq("id", id);
-  if (error) throw error;
+  await writeDelete("recurring_expenses", id, {
+    action: "recurring",
+    activity: "Deleted a recurring expense",
+  });
 }
 
 export async function fetchAppliedRecurringIds(month: string): Promise<string[]> {
@@ -541,28 +646,27 @@ export async function fetchAppliedRecurringIds(month: string): Promise<string[]>
 
 /** Adds the given recurring items as real expenses for the month and logs them. */
 export async function applyRecurring(month: string, items: Recurring[]) {
-  const user_id = await uid();
   for (const item of items) {
     const day = String(item.day_of_month).padStart(2, "0");
     const spent_on = `${month.slice(0, 7)}-${day}`;
-    const inserted = await supabase
-      .from("expenses")
-      .insert({
-        user_id,
+    const expenseId = await writeInsert(
+      "expenses",
+      {
         amount: item.amount,
         category_id: item.category_id,
         spent_on,
         note: item.label,
-      })
-      .select("id")
-      .single();
-    if (inserted.error) throw inserted.error;
-    const logged = await supabase.from("recurring_applied").insert({
-      user_id,
+        fx_rate: 1,
+      },
+      {
+        action: "recurring",
+        activity: `Recurring expense \u201c${item.label}\u201d added to ${monthLabel(month)} (${money(item.amount)})`,
+      },
+    );
+    await writeInsert("recurring_applied", {
       recurring_id: item.id,
       month,
-      expense_id: inserted.data.id,
+      expense_id: expenseId,
     });
-    if (logged.error) throw logged.error;
   }
 }
