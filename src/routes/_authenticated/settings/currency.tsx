@@ -102,11 +102,10 @@ function CurrencyPage() {
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-lg uppercase tracking-[0.14em]">Currency &amp; rates</h1>
           <Button
-            disabled={!offline.online}
             size="sm"
             variant="secondary"
             onClick={() => refreshRates.mutate()}
-            disabled={refreshRates.isPending}
+            disabled={refreshRates.isPending || !offline.online}
           >
             <RefreshCw className="mr-1 h-3.5 w-3.5" /> Refresh
           </Button>
