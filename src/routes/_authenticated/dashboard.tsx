@@ -258,7 +258,6 @@ function Dashboard() {
         </div>
       </section>
 
-
       <ExpenseDialog open={addOpen} onOpenChange={setAddOpen} />
       <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
     </div>

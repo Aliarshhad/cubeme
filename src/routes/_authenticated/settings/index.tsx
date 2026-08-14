@@ -5,7 +5,10 @@ import {
   Check,
   ChevronRight,
   Coins,
+  Instagram,
   ListTree,
+  Mail,
+  MessageCircle,
   PlayCircle,
   ShieldCheck,
   Sparkles,
@@ -133,7 +136,7 @@ function SettingsPage() {
         </Section>
 
         <Section value="themes" icon={Sparkles} title="Themes">
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2">
             {THEMES.map((t) => (
               <button
                 key={t.name}
@@ -164,6 +167,37 @@ function SettingsPage() {
                 </div>
               </button>
             ))}
+          </div>
+        </Section>
+
+        <Section value="contact" icon={MessageCircle} title="Contact us">
+          <div className="space-y-2">
+            <a
+              href="mailto:cubeme.app@gmail.com"
+              className="flex items-center gap-3 rounded-2xl glass-soft px-4 py-3 transition-colors hover:bg-foreground/5"
+            >
+              <Mail className="h-5 w-5 shrink-0 text-primary" />
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-medium">Email us</span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  cubeme.app@gmail.com
+                </span>
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </a>
+            <a
+              href="https://www.instagram.com/cubeme.app/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 rounded-2xl glass-soft px-4 py-3 transition-colors hover:bg-foreground/5"
+            >
+              <Instagram className="h-5 w-5 shrink-0 text-primary" />
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-medium">Instagram</span>
+                <span className="block truncate text-xs text-muted-foreground">@cubeme.app</span>
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </a>
           </div>
         </Section>
 

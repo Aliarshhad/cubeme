@@ -40,12 +40,7 @@ export const THEMES: {
 ];
 
 export function isThemeName(value: unknown): value is ThemeName {
-  return (
-    value === "founder" ||
-    value === "taurus" ||
-    value === "butterfly" ||
-    value === "eclipse"
-  );
+  return value === "founder" || value === "taurus" || value === "butterfly" || value === "eclipse";
 }
 
 export function themeColorFor(name: ThemeName) {

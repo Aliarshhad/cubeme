@@ -6,6 +6,26 @@ export type ChangelogEntry = { date: string; text: string };
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "Aug 14, 2026",
+    text: "New Eclipse theme \u2014 liquid bronze and cream light over black.",
+  },
+  {
+    date: "Aug 14, 2026",
+    text: "Category colours are editable: tap the dot to pick a preset or any custom colour, and the dashboard chart follows.",
+  },
+  {
+    date: "Aug 14, 2026",
+    text: "\u201cMore to love\u201d is now a swipeable row of previews \u2014 Bill Split and Savings goals.",
+  },
+  {
+    date: "Aug 14, 2026",
+    text: "Added Contact us in Settings with our email and Instagram.",
+  },
+  {
+    date: "Aug 14, 2026",
+    text: "The sign-in page header now stays pinned while you scroll, like every other screen.",
+  },
+  {
     date: "Aug 13, 2026",
     text: "Cube now works offline. After signing in online you can keep using it for 7 days with no internet \u2014 view everything and keep adding budgets, expenses and ledger entries. Changes sync on their own the moment you\u2019re back online.",
   },
