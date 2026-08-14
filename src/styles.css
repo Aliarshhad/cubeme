@@ -199,7 +199,6 @@
   --glow-b: oklch(0.3 0.12 258);
 }
 
-
 @layer base {
   * {
     border-color: var(--color-border);
@@ -236,13 +235,12 @@
 /* Thick frosted panel — iOS "regular" material */
 @utility glass {
   position: relative;
-  background:
-    linear-gradient(
-      160deg,
-      color-mix(in oklab, var(--color-foreground) var(--glass-tint), transparent),
-      color-mix(in oklab, var(--color-maroon) 20%, transparent) 55%,
-      color-mix(in oklab, var(--color-foreground) 4%, transparent)
-    );
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--color-foreground) var(--glass-tint), transparent),
+    color-mix(in oklab, var(--color-maroon) 20%, transparent) 55%,
+    color-mix(in oklab, var(--color-foreground) 4%, transparent)
+  );
   border: 1px solid color-mix(in oklab, var(--color-foreground) 11%, transparent);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   box-shadow:

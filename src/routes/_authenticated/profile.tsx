@@ -143,7 +143,11 @@ function ProfilePage() {
         <div className="relative">
           <div className="h-20 w-20 overflow-hidden rounded-full bg-input/50">
             {avatar.data ? (
-              <img src={avatar.data} alt="Your profile picture" className="h-full w-full object-cover" />
+              <img
+                src={avatar.data}
+                alt="Your profile picture"
+                className="h-full w-full object-cover"
+              />
             ) : (
               <div className="flex h-full w-full items-center justify-center font-display text-2xl">
                 {(profile.data?.display_name ?? "C").slice(0, 1).toUpperCase()}

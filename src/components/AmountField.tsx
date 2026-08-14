@@ -41,7 +41,9 @@ export function AmountField({
   const converted = toBase(numeric, currency, base, rates);
   const foreign = currency !== base;
 
-  const codes = Array.from(new Set([base, ...CURRENCY_OPTIONS, ...(rates ?? []).map((r) => r.code)]));
+  const codes = Array.from(
+    new Set([base, ...CURRENCY_OPTIONS, ...(rates ?? []).map((r) => r.code)]),
+  );
 
   return (
     <div className="space-y-1.5">

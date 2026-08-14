@@ -98,7 +98,9 @@ export function ReceiptDetails({ receiptId }: { receiptId: string }) {
                       </button>
                     ))}
                     {it.reason && (
-                      <span className="truncate text-[11px] text-muted-foreground">{it.reason}</span>
+                      <span className="truncate text-[11px] text-muted-foreground">
+                        {it.reason}
+                      </span>
                     )}
                   </div>
                 </li>

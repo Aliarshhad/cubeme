@@ -44,7 +44,6 @@ function Expenses() {
   const [editing, setEditing] = useState<api.Expense | undefined>();
   const [scanOpen, setScanOpen] = useState(false);
 
-
   const remove = useMutation({
     mutationFn: (id: string) => api.deleteExpense(id),
     onSuccess: () => {
@@ -91,7 +90,6 @@ function Expenses() {
         </div>
       </div>
 
-
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1" data-tour="category-filter">
         <FilterChip active={filter === null} onClick={() => setFilter(null)} label="All" />
         {(categories.data ?? []).map((c) => (
@@ -124,9 +122,7 @@ function Expenses() {
                   />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold">{catName(e.category_id)}</p>
-                    {e.note && (
-                      <p className="truncate text-xs text-muted-foreground">{e.note}</p>
-                    )}
+                    {e.note && <p className="truncate text-xs text-muted-foreground">{e.note}</p>}
                   </div>
                   <span className="font-display text-lg">{formatMoney(e.amount, currency)}</span>
                   <div className="flex shrink-0 gap-1">

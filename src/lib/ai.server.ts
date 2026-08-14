@@ -3,15 +3,13 @@
 const GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL = "openai/gpt-5.6-sol";
 
-type Content =
-  | { type: "text"; text: string }
-  | { type: "image_url"; image_url: { url: string } };
+type Content = { type: "text"; text: string } | { type: "image_url"; image_url: { url: string } };
 
 async function callGateway(
   messages: { role: "system" | "user"; content: string | Content[] }[],
   schema: { name: string; schema: Record<string, unknown> },
 ) {
-  const key = process.env['LOVABLE_API_KEY'];
+  const key = process.env["LOVABLE_API_KEY"];
   if (!key) throw new Error("AI is not configured");
 
   const res = await fetch(GATEWAY, {

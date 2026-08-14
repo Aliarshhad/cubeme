@@ -83,8 +83,7 @@ export async function enablePushReminder(time: string) {
     throw new Error(
       "Notifications are blocked for Cube. Allow them in your browser settings, then try again.",
     );
-  if (permission !== "granted")
-    throw new Error("Allow notifications to get your daily reminder");
+  if (permission !== "granted") throw new Error("Allow notifications to get your daily reminder");
 
   const registration = (await getPushRegistration()) ?? (await pushRegistration());
   if (!registration)
@@ -164,4 +163,3 @@ export async function disablePushReminder() {
     .update({ enabled: false })
     .eq("endpoint", subscription.endpoint);
 }
-
