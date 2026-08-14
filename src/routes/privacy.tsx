@@ -40,9 +40,7 @@ function Section({
         <Icon className="h-5 w-5 text-primary" />
         {title}
       </h2>
-      <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted-foreground">
-        {children}
-      </div>
+      <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
     </section>
   );
 }
@@ -158,7 +156,9 @@ function Privacy() {
                 screen it appears on.
               </li>
               <li>Export — you can request a copy of your data.</li>
-              <li>Deletion — you can delete individual entries or request full account deletion.</li>
+              <li>
+                Deletion — you can delete individual entries or request full account deletion.
+              </li>
             </ul>
             <p>
               For access, export or deletion requests, contact{" "}

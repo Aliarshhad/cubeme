@@ -21,7 +21,6 @@ export function subscribeInstallState(listener: () => void) {
   };
 }
 
-
 export function captureInstallPrompt() {
   if (typeof window === "undefined") return;
   const onPrompt = (event: Event) => {

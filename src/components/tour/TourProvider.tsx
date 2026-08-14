@@ -62,7 +62,6 @@ export function TourProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile.data, finished]);
 
-
   /* Navigate to the step's screen. */
   useEffect(() => {
     if (!step) return;
@@ -198,10 +197,7 @@ function TourOverlay({
       </button>
 
       <div
-        className={cn(
-          "absolute inset-x-4 mx-auto max-w-sm",
-          tooltipBelow ? "" : "bottom-auto",
-        )}
+        className={cn("absolute inset-x-4 mx-auto max-w-sm", tooltipBelow ? "" : "bottom-auto")}
         style={
           rect
             ? tooltipBelow

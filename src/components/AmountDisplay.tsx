@@ -38,11 +38,7 @@ export function AmountDisplay({
   return (
     <p
       title={full}
-      className={cn(
-        "tnum block min-w-0 break-words font-display leading-[1.05]",
-        fluid,
-        className,
-      )}
+      className={cn("tnum block min-w-0 break-words font-display leading-[1.05]", fluid, className)}
       style={tone ? { color: tone } : undefined}
     >
       {text}

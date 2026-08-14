@@ -128,7 +128,9 @@ function Ledger() {
             onClick={() => setTab(t.key)}
             className={cn(
               "shrink-0 rounded-full border border-border px-4 py-1.5 text-sm transition-colors",
-              tab === t.key ? "bg-primary text-primary-foreground" : "glass-soft text-muted-foreground",
+              tab === t.key
+                ? "bg-primary text-primary-foreground"
+                : "glass-soft text-muted-foreground",
             )}
           >
             {t.label}
@@ -180,7 +182,10 @@ function Row({
   const outgoing = debt.direction === "lend" || debt.direction === "sent";
   const repayable = debt.direction === "lend" || debt.direction === "borrow";
   const overdue =
-    repayable && !debt.settled_at && !!debt.expected_return_on && debt.expected_return_on < todayISO();
+    repayable &&
+    !debt.settled_at &&
+    !!debt.expected_return_on &&
+    debt.expected_return_on < todayISO();
 
   return (
     <div className="flex items-center gap-3 px-4 py-3">
@@ -202,7 +207,9 @@ function Row({
           )}
         </p>
         <p className="truncate text-xs text-muted-foreground">
-          {debt.direction === "lend" ? `Lent ${dayLabel(debt.occurred_on)}` : dayLabel(debt.occurred_on)}
+          {debt.direction === "lend"
+            ? `Lent ${dayLabel(debt.occurred_on)}`
+            : dayLabel(debt.occurred_on)}
           {debt.returned_on ? ` · Returned ${dayLabel(debt.returned_on)}` : ""}
           {debt.purpose ? ` · ${debt.purpose}` : ""}
           {debt.note ? ` · ${debt.note}` : ""}

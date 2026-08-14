@@ -209,8 +209,8 @@ export function ReceiptScanner({
         {!scanned ? (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Take a photo of the receipt or pick one from your gallery — AI reads the items,
-              prices and suggests a category.
+              Take a photo of the receipt or pick one from your gallery — AI reads the items, prices
+              and suggests a category.
             </p>
             <div className="grid grid-cols-2 gap-3">
               <Button

@@ -40,7 +40,6 @@ function AppShellInner({ children }: { children: ReactNode }) {
     (profile.data?.reminder_time ?? "21:00").slice(0, 5),
   );
 
-
   async function signOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -121,12 +120,6 @@ function AppShellInner({ children }: { children: ReactNode }) {
   );
 }
 
-export function GlassCard({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function GlassCard({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cn("glass rounded-3xl p-5", className)}>{children}</div>;
 }

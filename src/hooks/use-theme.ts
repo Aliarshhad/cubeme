@@ -3,13 +3,7 @@ import { useEffect } from "react";
 
 import { useProfile } from "@/hooks/use-cube";
 import * as api from "@/lib/api";
-import {
-  applyTheme,
-  readStoredTheme,
-  storeTheme,
-  isThemeName,
-  type ThemeName,
-} from "@/lib/theme";
+import { applyTheme, readStoredTheme, storeTheme, isThemeName, type ThemeName } from "@/lib/theme";
 
 /** Applies this account's cached theme immediately, then reconciles with the saved profile theme. */
 export function useTheme() {
