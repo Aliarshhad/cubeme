@@ -1,7 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, Repeat, TrendingDown, TrendingUp, Pencil, ScanLine } from "lucide-react";
+import {
+  Plus,
+  Repeat,
+  TrendingDown,
+  TrendingUp,
+  Pencil,
+  PiggyBank,
+  Receipt,
+  ScanLine,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { AmountDisplay } from "@/components/AmountDisplay";
@@ -251,6 +261,37 @@ function Dashboard() {
 
       <ExpenseDialog open={addOpen} onOpenChange={setAddOpen} />
       <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
+    </div>
+  );
+}
+
+function TeaserCard({
+  title,
+  icon: Icon,
+  gradient,
+}: {
+  title: [string, string];
+  icon: LucideIcon;
+  gradient: string;
+}) {
+  return (
+    <div
+      aria-hidden={false}
+      className="relative h-[210px] w-[165px] shrink-0 snap-start overflow-hidden rounded-3xl border border-border p-4"
+      style={{ backgroundImage: gradient }}
+    >
+      <span className="rounded-full border border-border bg-background/30 px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+        Coming soon
+      </span>
+      <p className="mt-4 font-display text-2xl leading-[1.05] tracking-tight">
+        {title[0]}
+        <br />
+        {title[1]}
+      </p>
+      <Icon
+        className="pointer-events-none absolute -bottom-5 -right-5 h-28 w-28 text-foreground/15"
+        strokeWidth={1.25}
+      />
     </div>
   );
 }
