@@ -81,10 +81,15 @@ function AuthPage() {
   }
 
   return (
-    <div className="glow-field flex min-h-screen items-center justify-center px-5 py-10">
+    <div className="glow-field min-h-screen">
+      <header className="sticky top-0 z-30 glass-soft">
+        <div className="mx-auto flex max-w-3xl items-center px-5 py-3">
+          <CubeWordmark />
+        </div>
+      </header>
+      <main className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center px-5 py-10">
       <div className="glass w-full max-w-sm rounded-4xl p-7">
         <div className="flex flex-col items-center gap-2 text-center">
-          <CubeWordmark className="scale-125" />
           <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.12em] text-glow">
             {mode === "signin" ? "Welcome back" : "Create account"}
           </h1>
