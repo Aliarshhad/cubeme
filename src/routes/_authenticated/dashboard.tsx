@@ -234,17 +234,20 @@ function Dashboard() {
             A peek at what&apos;s coming to Cube next.
           </p>
         </div>
-        <GlassCard className="relative">
-          <span className="absolute right-4 top-4 rounded-full border border-border px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-            Coming soon
-          </span>
-          <p className="pr-24 font-display text-xl tracking-tight">Bill Split</p>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Split a group expense evenly and add everyone&apos;s share straight to your ledger — no
-            manual math.
-          </p>
-        </GlassCard>
+        <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1">
+          <TeaserCard
+            title={["Bill", "Split"]}
+            icon={Receipt}
+            gradient="linear-gradient(150deg, var(--maroon) 0%, color-mix(in oklab, var(--maroon) 35%, var(--background)) 55%, var(--background) 100%)"
+          />
+          <TeaserCard
+            title={["Savings", "goals"]}
+            icon={PiggyBank}
+            gradient="linear-gradient(150deg, color-mix(in oklab, var(--warning) 45%, var(--maroon)) 0%, var(--maroon) 55%, var(--background) 100%)"
+          />
+        </div>
       </section>
+
 
       <ExpenseDialog open={addOpen} onOpenChange={setAddOpen} />
       <ReceiptScanner open={scanOpen} onOpenChange={setScanOpen} />
