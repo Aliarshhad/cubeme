@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { GlassCard } from "@/components/AppShell";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCategories } from "@/hooks/use-cube";
@@ -34,6 +35,7 @@ function CategoriesPage() {
   const [newCat, setNewCat] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
+  const [newColor, setNewColor] = useState(PALETTE[0]!);
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["categories"] });
 
@@ -41,7 +43,7 @@ function CategoriesPage() {
     mutationFn: async () => {
       const name = newCat.trim();
       if (!name) throw new Error("Name the category");
-      const color = PALETTE[(categories.data?.length ?? 0) % PALETTE.length]!;
+      const color = newColor;
       await api.createCategory({ name, color });
       return name;
     },
@@ -50,6 +52,18 @@ function CategoriesPage() {
       setNewCat("");
       void logActivity("category", `Added the category "${name}"`);
       toast.success("Category added");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const recolourCat = useMutation({
+    mutationFn: ({ cat, color }: { cat: api.Category; color: string }) =>
+      api.updateCategory(cat.id, { color }),
+    onSuccess: (_d, v) => {
+      invalidate();
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      void logActivity("category", `Changed the colour of the category "${v.cat.name}"`);
+      toast.success("Colour updated");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -93,9 +107,10 @@ function CategoriesPage() {
         <ul className="divide-y divide-border">
           {(categories.data ?? []).map((c) => (
             <li key={c.id} className="flex items-center gap-3 py-2.5">
-              <span
-                className="h-3 w-3 shrink-0 rounded-full"
-                style={{ backgroundColor: c.color }}
+              <ColorPicker
+                value={c.color}
+                label={c.name}
+                onChange={(color) => recolourCat.mutate({ cat: c, color })}
               />
               {editingId === c.id ? (
                 <>
@@ -152,6 +167,7 @@ function CategoriesPage() {
             addCat.mutate();
           }}
         >
+          <ColorPicker value={newColor} label="new category" onChange={setNewColor} />
           <Input
             value={newCat}
             onChange={(e) => setNewCat(e.target.value)}
@@ -164,5 +180,50 @@ function CategoriesPage() {
         </form>
       </GlassCard>
     </div>
+  );
+}
+
+function ColorPicker({
+  value,
+  label,
+  onChange,
+}: {
+  value: string;
+  label: string;
+  onChange: (color: string) => void;
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          aria-label={`Change the colour of ${label}`}
+          className="h-5 w-5 shrink-0 rounded-full border border-border transition-transform hover:scale-110"
+          style={{ backgroundColor: value }}
+        />
+      </PopoverTrigger>
+      <PopoverContent className="w-56 space-y-3">
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Colour</p>
+        <div className="grid grid-cols-7 gap-2">
+          {PALETTE.map((p) => (
+            <button
+              key={p}
+              aria-label={`Use ${p}`}
+              onClick={() => onChange(p)}
+              className="h-6 w-6 rounded-full border border-border transition-transform hover:scale-110"
+              style={{ backgroundColor: p }}
+            />
+          ))}
+        </div>
+        <label className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+          Custom
+          <input
+            type="color"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="h-8 w-14 cursor-pointer rounded-md border border-border bg-transparent p-0.5"
+          />
+        </label>
+      </PopoverContent>
+    </Popover>
   );
 }
