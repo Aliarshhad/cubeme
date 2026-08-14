@@ -153,6 +153,7 @@ function AuthPage() {
           {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
         </button>
       </div>
+      </main>
     </div>
-  );
+
 }
